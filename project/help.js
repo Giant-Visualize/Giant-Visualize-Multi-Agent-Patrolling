@@ -37,6 +37,10 @@
         this.cx = this.cx || 300;
         this.animate({cx: this.cx, fill: this.cx - 100 ? "hsb(.6, .75, .75)" : "#000", "fill-opacity": +!!(this.cx - 100)}, 400);
         });
+        map.dblclick(function(){
+        this.cx = this.cx || 300;
+        this.animate({cx: this.cx, fill: "#FFFFFF", "fill-opacity": +!!(this.cx - 100)}, 400);
+        });
     }
 	else{
 	alert('Please type in right number', 'ERROR');
