@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html app="help">
+    <head>
+        <title>Some System</title>
+        <meta charset="utf-8">
+        <script src="raphael.js"></script>
+        <script src="help.js"></script>
+        <link rel="stylesheet" href ="style.css" type="text/css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  	    <script src="https://code.jquery.com/jquery-2.2.0.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        </head>
+        <body>
+      <div id = titleOfSystem>
+        
+      </div>
+      <div id = "guidMenu">
+      <form class="form-inline">
+    	<div class="form-group">
+    		<label>Length</label>
+    		<input class="form-control" id = "x" placeholder=" X " >
+  		</div>
+  		<div class="form-group">
+    		<label>Width</label>
+    		<input class="form-control" id = "y" placeholder=" Y " >
+  		</div>
+  		<button type="button" id = "initButton" class="btn btn-primary" onclick="init()"> Init </button>
+	    </form>
+      </div>
+      <div id="holder"></div>
+    </body>
+</html>
