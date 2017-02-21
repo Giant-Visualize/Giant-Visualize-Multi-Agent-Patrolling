@@ -4,7 +4,9 @@
         <title>Some System</title>
         <meta charset="utf-8">
         <script src="raphael.js"></script>
+        <script src="graph.js"> </script>
         <script src="help.js"></script>
+        <script src="MoveAgents.js"></script>
         <link rel="stylesheet" href ="style.css" type="text/css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   	    <script src="https://code.jquery.com/jquery-2.2.0.js"></script>
@@ -13,10 +15,10 @@
         </head>
         <body>
       <div id = titleOfSystem>
-        
+        <h3>Visualize Multi-Agent Patrolling</h3>
       </div>
       <div id = "guidMenu">
-      <form class="form-inline">
+      <form class="form-inline well well-sm">
     	<div class="form-group">
     		<label>Length</label>
     		<input class="form-control" id = "x" placeholder=" X " >
@@ -25,9 +27,62 @@
     		<label>Width</label>
     		<input class="form-control" id = "y" placeholder=" Y " >
   		</div>
-  		<button type="button" id = "initButton" class="btn btn-primary" onclick="init()"> Create </button>
+  		<button type="button" id = "initButton" class="btn btn-primary pull right" onclick="init()"> Create </button>
 	    </form>
       </div>
-      <div id="holder"></div>
+
+      <div id = "regionMenu">
+      <form class="form-inline well well-sm">
+      <div class="form-group">
+    		<button type="button" id = "graphView" class="btn btn-primary" data-toggle="modal" data-target="#myModal"> GraphicView </button>
+  		</div>
+    	<div class="form-group">
+    		<button type="button" id = "createRegion" class="btn btn-primary" onclick="createRegion()"> Confirm Region </button>
+  		</div>
+      <label class = "agentLabel">Choose Agent Position :</label>
+      <div class="form-group">
+      <sub>
+      <label class="switch">
+          <input type="checkbox" id = "agent">
+            <div class="slider round"></div>
+        </label>
+      </sub>
+      </div>
+      </form>
+      </div>
+
+      <form class="form-inline well well-sm" id = "runMenu">
+      <div class="form-group">
+        <input class="form-control" id = "steps" placeholder=" Steps " >
+        <button type="button" id = "runForOnce" class="btn btn-primary" onclick="runOnce()"> Run One Step </button>
+  		  <button type="button" id = "runForMore" class="btn btn-primary" onclick="run()"> Run </button>
+      </div>
+      </form>
+      <div id="holderOfBlock">
+      <!--<div id="holderOfBlock"></div>
+      <div id="target">
+        <canvas id="myCanvas" width="800px" height="800px" > </canvas>
+      </div>-->
+      <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Graphic View</h4>
+        </div>
+        <div class="modal-body">
+          <div id="target">
+            <canvas id="myCanvas" width="800px" height="800px" > </canvas>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
     </body>
 </html>
