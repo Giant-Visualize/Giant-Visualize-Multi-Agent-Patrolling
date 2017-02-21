@@ -4,9 +4,11 @@
     var agentArray = [];
     var agentCount = 0;
     var currentStep = 1;
-    var currentAgent = []
+    var currentAgent = [];
+    var paper = {};
 
     function init() {
+        paper = Raphael("holderOfBlock",1280,1280);
         var x = parseInt(document.getElementById("x").value);
         var y = parseInt(document.getElementById("y").value);
         for(var i=0;i<x;i++){    
@@ -19,8 +21,6 @@
         console.log(typeof(x));
         console.log(Number.isInteger(x));
         if(Number.isInteger(x)&& Number.isInteger(y) && x>0 && y>0 && x<16 && y<16){
-
-        var paper = Raphael("holderOfBlock",1280,1280);
 
         var map = paper.set();
         for(var i = 0; i<x;i++){
@@ -66,13 +66,16 @@
 	}
     };
 
-    function createRegion(){
+    function confirm(){
+        runOnce();
 
     };
 
     function runOnce() {
+        paper.remove();
+        currentAgent = [];
         var resultOfMove = move(agentArray,environment);
-        var paper = Raphael("holderOfBlock",1280,680);
+        paper = Raphael("holderOfBlock",1280,680);
 
     //-----------------------------block-----------------------------------------
         for(var i = 0; i<environment.length;i++){
@@ -94,11 +97,14 @@
             var block = paper.rect((((1280-environment.length*50)/2)+value[i].x*50),(100+value[i].y*50),50,50);
             paper.text((((1280-environment.length*50)/2)+value[currentStep-1].x*50+10),(110+value[currentStep-1].y*50),key)
             block.attr({fill:"#E7E421"});
-            var agent = {};
-            agent.id = key;
-            agent.x = value[i].x;
-            agent.y = value[i].y
-            currentAgent.push(agent);
+            if(i==currentStep-1){
+                var agent = {};
+                agent.id = key;
+                agent.x = value[i].x;
+                agent.y = value[i].y
+                currentAgent.push(agent);
+            }
+            
             }else{
                 console.log("else")
                 console.log(key + ' => [' + value[value.length-1].x+","+value[value.length-1].y+"]");
@@ -107,6 +113,14 @@
                 paper.text((((1280-environment.length*50)/2)+value[value.length-1].x*50+10),(110+value[value.length-1].y*50),key)
                 block.attr({fill:"#E7E421"});
                     }
+                var agent = {};
+                agent.id = key;
+                agent.x = value[value.length-1].x;
+                agent.y = value[value.length-1].y;
+                console.log(value.length+"+"+currentStep);
+                if(value.length<=currentStep)
+                currentAgent.splice(-1,1);
+                currentAgent.push(agent);
                 }
             }
         }
@@ -120,6 +134,7 @@
             }
         }
         graph(mapForGra,currentAgent);
+        hideGraph();
         currentStep++;
 
     };
@@ -130,6 +145,26 @@
             runOnce();
         }
     };
+
+    function switchView(){
+        if($("#graphView").is(':checked') == true){
+            paper.remove();
+            var mapForGra = [];
+            for(var i = 0 ; i<environment.length ; i++){
+                for(var j = 0 ; j<environment.length ; j++){
+                    if(environment[i][j] == 0){
+                        mapForGra.push({x : i , y : j});
+                    }
+                }
+            }
+            console.log(currentAgent);
+            graph(mapForGra,currentAgent);
+        }else{
+            currentStep--;
+            runOnce();
+            hideGraph();
+        }
+    }
 
 
 

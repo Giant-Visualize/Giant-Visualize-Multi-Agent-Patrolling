@@ -1,6 +1,11 @@
 var times=80;
-var leftGap=100;
+var leftGap= 300;
 var topGap=100;
+function hideGraph(){
+    var c = document.getElementById("myCanvas");
+    var ctx = c.getContext("2d");
+    ctx.clearRect(0,0,1280,1280);
+}
 
 function graph(region,agent){
     var c = document.getElementById("myCanvas");
@@ -14,7 +19,9 @@ function graph(region,agent){
 
       region.forEach((node)=>{
           if(Math.abs(leftGap+times*node.x-x)<=10&&Math.abs(topGap+times*node.y-y)<=10){
-            alert(times*node.x+","+times*node.y);
+                agent.forEach((a)=>{
+                if(a.x==node.x&&a.y==node.y) alert(a.id+","+a.x+","+a.y);
+            });
           }
       });
     });
