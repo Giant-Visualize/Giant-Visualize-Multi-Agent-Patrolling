@@ -1,10 +1,13 @@
 var times=80;
 var leftGap= 300;
 var topGap=100;
-function hideGraph(){
+function switchGraph(){
     var c = document.getElementById("myCanvas");
-    var ctx = c.getContext("2d");
-    ctx.clearRect(0,0,1280,1280);
+    if(c.style.visibility=='visible'){
+        c.style.visibility='hidden';
+    }else{
+        c.style.visibility='visible';
+    }
 }
 
 function graph(region,agent){

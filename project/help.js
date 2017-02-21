@@ -6,6 +6,7 @@
     var currentStep = 1;
     var currentAgent = [];
     var paper = {};
+    var firstCreateGraph=true;
 
     function init() {
         paper = Raphael("holderOfBlock",1280,1280);
@@ -158,11 +159,16 @@
                 }
             }
             console.log(currentAgent);
-            graph(mapForGra,currentAgent);
+            if(firstCreateGraph){
+                graph(mapForGra,currentAgent);
+                firstCreateGraph=false;
+            }
+            switchGraph();  
+    
         }else{
             currentStep--;
             runOnce();
-            hideGraph();
+            switchGraph();
         }
     }
 
