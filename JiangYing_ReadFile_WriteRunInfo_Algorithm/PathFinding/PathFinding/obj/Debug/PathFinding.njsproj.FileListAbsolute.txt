@@ -1,0 +1,2 @@
+E:\Visual Studio Projects\PathFinding\PathFinding\obj\Debug\PathFinding.njsprojResolveAssemblyReference.cache
+E:\Visual Studio Projects\PathFinding\PathFinding\bin\Microsoft.NodejsTools.WebRole.dll
