@@ -1,5 +1,4 @@
 ﻿
-
 /**
  * Don't change the code below
  */
@@ -17,7 +16,7 @@ function readFile() {
             //alert(string);
             environment = processFile(string);
             //read environment change it to matrix
-            readEnvironment(environment);  // works fine
+           // readEnvironment(environment);  // works fine
         }
         reader.onerror = function (evt) {
             alert("error reading file");
@@ -66,6 +65,8 @@ function processFile(string) {
     environment.size = size;
     environment.regions = regions;
     environment.agents = agents;
+    console.log(environment);
+
     return environment;
 }
 
@@ -118,7 +119,7 @@ function getSettings() {
 
 //allAgentsPaths below is the data you need to display
 function showAgentsPath(allAgentsPaths) {
-    alert(JSON.stringify(path));
+    alert(JSON.stringify(allAgentsPaths));
 }
 
 
