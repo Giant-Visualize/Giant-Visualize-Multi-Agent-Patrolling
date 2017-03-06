@@ -189,7 +189,6 @@ function Node(x, y) {
 
 function getAgentPath(environment){
     environment=environment;
-    console.log(environment);
     readEnvironment(environment);
     getTargetList(environment);
     var agentsInfo = getAgentsInfo(environment);

@@ -3,13 +3,12 @@
  * Don't change the code below
  */
 var environment;
+var agentPath;
 var s = [];
 function readFile() {
     var string;
    // var file = document.getElementById("fileUpload").files[0];
-   console.log(1111111);
     var file = $('#fileUpload').get(0).files[0];
-    console.log(2222222);
     if (file) {
         var reader = new FileReader();
         reader.readAsText(file, "UTF-8");
@@ -25,6 +24,7 @@ function readFile() {
         }
     } else return;
 }
+
 
 //works fine
 //get the information of environment
@@ -67,8 +67,6 @@ function processFile(string) {
     environment.size = size;
     environment.regions = regions;
     environment.agents = agents;
-    console.log(environment);
-
     return environment;
 }
 
@@ -105,7 +103,6 @@ function Region(id, openSpaces) {
  */
 
 function getSettings() {
-   console.log("getSettings");
     $.ajax({
         url: "/file",
         method: "GET",
@@ -118,10 +115,19 @@ function getSettings() {
 }
 //Don't change the code above
 
+function getEnvironment(){
+    console.log(environment);
+    return environment;
+}
 
+function getAgentPath(){
+    console.log(agentPath);
+    return  agentPath;
+}
 //allAgentsPaths below is the data you need to display
 function showAgentsPath(allAgentsPaths) {
-    console.log(JSON.stringify(allAgentsPaths));
+    agentPath=allAgentsPaths;
+    // console.log(JSON.stringify(allAgentsPaths));
 }
 
 

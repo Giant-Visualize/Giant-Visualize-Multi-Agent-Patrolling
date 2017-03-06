@@ -149,26 +149,15 @@
 
     function switchView(){
         if($("#graphView").is(':checked') == true){
-            paper.remove();
-            var mapForGra = [];
-            for(var i = 0 ; i<environment.length ; i++){
-                for(var j = 0 ; j<environment.length ; j++){
-                    if(environment[i][j] == 0){
-                        mapForGra.push({x : i , y : j});
-                    }
-                }
-            }
-            console.log(currentAgent);
             if(firstCreateGraph){
-                graph(mapForGra,currentAgent);
+                graph(getEnvironment(),1,getAgentPath(),1,2);
                 firstCreateGraph=false;
             }
-            switchGraph();  
-    
+            switchGraph()
         }else{
             currentStep--;
             runOnce();
-            switchGraph();
+            switchGraph()
         }
     }
 
