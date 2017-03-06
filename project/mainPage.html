@@ -12,6 +12,12 @@
   	    <script src="https://code.jquery.com/jquery-2.2.0.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.1.1.js"
+            integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+            crossorigin="anonymous">
+        </script>
+        <script src="readFile.js"></script>
+        
         </head>
         <body>
       <div id = titleOfSystem>
@@ -57,6 +63,15 @@
       </sub>
       </div>
 
+      </form>
+      </div>
+      <!--upload file-->
+      <div id = "regionMenu">
+      <form class="form-inline well well-sm">
+    	  <!--Please name the id='fileUpload' onchange='readFile()'-->
+        <input type="file" name="fileUpload" value="fileUpload" id="fileUpload" onchange="readFile()">
+        <!--Please write onclick='getSettings()'-->
+        <input type="button" value="submit" onclick="getSettings()">  
       </form>
       </div>
 

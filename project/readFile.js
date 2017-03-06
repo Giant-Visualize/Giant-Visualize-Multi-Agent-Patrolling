@@ -1,0 +1,129 @@
+﻿
+/**
+ * Don't change the code below
+ */
+var environment;
+var s = [];
+function readFile() {
+    var string;
+   // var file = document.getElementById("fileUpload").files[0];
+   console.log(1111111);
+    var file = $('#fileUpload').get(0).files[0];
+    console.log(2222222);
+    if (file) {
+        var reader = new FileReader();
+        reader.readAsText(file, "UTF-8");
+        reader.onload = function (evt) {
+            string = evt.target.result;
+            //alert(string);
+            environment = processFile(string);
+            //read environment change it to matrix
+           // readEnvironment(environment);  // works fine
+        }
+        reader.onerror = function (evt) {
+            alert("error reading file");
+        }
+    } else return;
+}
+
+//works fine
+//get the information of environment
+function processFile(string) {
+    var lines = string.split('\n');
+    var size = Size(lines[0].match(/\d+/g, '')[0], lines[0].match(/\d+/g, '')[1]);
+    //environment size is correct
+    var agents = [];
+    var regions = [];
+    var environment = {};
+    var currentRegionID;
+
+    var i = 1;
+    while (i < lines.length) {
+        var openSpacesOfOneRegion = [];
+        if (lines[i].includes('Region')) {
+            currentRegionID = lines[i].match(/\d+/g, '')[0];
+            i++;
+        }
+        if (lines[i].includes('Coordinates:')) {
+            var coordinates = lines[i].match(/\d+/g, '');
+            for (var j = 0; j < coordinates.length; j = j + 2) {
+                var posi = Position(coordinates[j], coordinates[j + 1]);
+                openSpacesOfOneRegion.push(posi);
+            }
+            var region = Region(currentRegionID, openSpacesOfOneRegion);
+            regions.push(region);
+            i++;
+        }
+        if (lines[i].includes('Agents')) {
+            i++;
+        }
+        if (lines[i].includes('Agent')) {
+            var agentId = lines[i].match(/\d+/g, '')[0];
+            var agentPosition = Position(lines[i].match(/\d+/g, '')[1], lines[i].match(/\d+/g, '')[2]);
+            agents.push(Agent(agentId, agentPosition, currentRegionID));
+            i++;
+        }
+    }
+    environment.size = size;
+    environment.regions = regions;
+    environment.agents = agents;
+    console.log(environment);
+
+    return environment;
+}
+
+function Position(x, y) {
+    var position = {};
+    position.x = x;
+    position.y = y;
+    return position;
+}
+
+function Size(x, y) {
+    var size = {};
+    size.x = x;
+    size.y = y;
+    return size;
+}
+
+function Agent(id, position, region) {
+    var agent = {};
+    agent.id = id;
+    agent.position = position;
+    agent.region = region;
+    return agent;
+}
+
+function Region(id, openSpaces) {
+    var region = {};
+    region.id = id;
+    region.openSpaces = openSpaces;
+    return region;
+}
+/**
+ * read environment get the environment 0,1 matrix
+ */
+
+function getSettings() {
+   console.log("getSettings");
+    $.ajax({
+        url: "/file",
+        method: "GET",
+        data: { environment: environment},
+        success: function (data) {
+            showAgentsPath(data);
+        },
+        error: function (data) {
+            alert("error");
+        }
+    });
+}
+//Don't change the code above
+
+
+//allAgentsPaths below is the data you need to display
+function showAgentsPath(allAgentsPaths) {
+    console.log(JSON.stringify(allAgentsPaths));
+}
+
+

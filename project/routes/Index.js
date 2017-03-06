@@ -1,10 +1,20 @@
 var express = require('express');
 var app = express();
+var algorithm=require('./algorithm')
+
+
 
 app.use(express.static(__dirname + '/..'));
 
 app.get('/', (req, res) => {
   res.sendFile('mainPage.html', {root: __dirname + '/..'});
+});
+
+app.get('/file', function (req, res, next) {
+    environment = req.query.environment;
+    var agentsInfoStore=algorithm.getAgentPath(environment);
+    console.log(agentsInfoStore);
+    res.status(200).send(agentsInfoStore);
 });
 
 // app.get('/test', (req, res) => {
