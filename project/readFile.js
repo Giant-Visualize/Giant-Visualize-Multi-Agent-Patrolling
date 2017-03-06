@@ -110,9 +110,7 @@ function getSettings() {
         url: "/file",
         method: "GET",
         data: { environment: environment},
-        success: function (data) {
-            showAgentsPath(data);
-        },
+        success:showAgentsPath,
         error: function (data) {
             alert("error");
         }

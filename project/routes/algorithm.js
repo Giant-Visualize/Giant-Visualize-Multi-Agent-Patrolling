@@ -55,7 +55,7 @@ function processAgentsMoveInfo(agentsInfoStore) {
 }
 //write the run information to file 
 //including; region id, region coordinates, target list for this region, agents' paths
-function writeRunInfoToFile(agentsInfoStore) {
+function writeRunInfoToFile(agentsInfoStore,environment) {
     var runStatistics = [];
     var envRegions = environment.regions;
     var numOfOpenSpaces = 0;
@@ -79,6 +79,7 @@ function writeRunInfoToFile(agentsInfoStore) {
     var content = JSON.stringify(runStatistics);
     fs.writeFile(fileName, content, (err) => {
             if (err) throw err;
+            console.log("success!!!!");
     });
     
 }
@@ -193,6 +194,7 @@ function getAgentPath(environment){
     getTargetList(environment);
     var agentsInfo = getAgentsInfo(environment);
     var agentsInfoStore = chooseTargetsAndGetPaths(agentsInfo);//return to client
+    writeRunInfoToFile(agentsInfoStore,environment);
     return agentsInfoStore;
 }
 module.exports.getAgentPath=getAgentPath;
