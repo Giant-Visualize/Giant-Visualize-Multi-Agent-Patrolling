@@ -17,9 +17,10 @@
             crossorigin="anonymous">
         </script>
         <script src="readFile.js"></script>
+        <script src="randomColor.js"></script>
         <script src="node_modules/sweetalert/dist/sweetalert.min.js"></script>
         <link rel="stylesheet" type="text/css" href="node_modules/sweetalert/dist/sweetalert.css">
-        
+
         </head>
         <body>
       <div id = titleOfSystem>
@@ -43,7 +44,7 @@
       <div id = "regionMenu">
       <form class="form-inline well well-sm">
     	<div class="form-group">
-    		<button type="button" id = "createRegion" class="btn btn-primary" onclick="createRegion()"> Confirm Region </button>
+    		<button type="button" class="btn btn-primary" onclick="createRegion()"> Confirm Region </button>
   		</div>
       <label class = "agentLabel">Choose Agent Position :</label>
       <div class="form-group">
@@ -73,7 +74,7 @@
     	  <!--Please name the id='fileUpload' onchange='readFile()'-->
         <input type="file" name="fileUpload" value="fileUpload" id="fileUpload" onchange="readFile()">
         <!--Please write onclick='getSettings()'-->
-        <input type="button" value="submit" onclick="getSettings()">  
+        <input type="button" value="submit" onclick="getSettings()">
       </form>
       </div>
 
