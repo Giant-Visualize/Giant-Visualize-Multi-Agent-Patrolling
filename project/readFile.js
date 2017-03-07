@@ -103,6 +103,7 @@ function Region(id, openSpaces) {
  */
 
 function getSettings() {
+    console.log(environment);
     $.ajax({
         url: "/file",
         method: "GET",
@@ -116,20 +117,18 @@ function getSettings() {
 //Don't change the code above
 
 function getEnvironment(){
-    console.log(environment);
+    
     return environment;
 }
 
 function getAgentPath(){
-    console.log(agentPath);
     return  agentPath;
 }
 //allAgentsPaths below is the data you need to display
 function showAgentsPath(allAgentsPaths) {
     paper = Raphael("holderOfBlock",1280,680);
-    drawEnvironment(environment);
-    showGuidelines(environment);
-    console.log(environment);
+    drawEnvironment(getEnvironment());
+    showGuidelines(getEnvironment());
     agentPath=allAgentsPaths;
     // console.log(JSON.stringify(allAgentsPaths));
 }

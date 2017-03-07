@@ -86,12 +86,11 @@ function confirm(){
     rawEnvironment.size = {x:environmentOfAll.length,y:environmentOfAll[0].length};
     drawEnvironment(rawEnvironment);
     showGuidelines(rawEnvironment);
-    environment = rawEnvironment;
     $.ajax({
         url: "/file",
         method: "GET",
-        data: { environment: environment},
-        success:showAgentsPathForClick,
+        data: { environment: rawEnvironment},
+        success: showAgentsPathForClick,
         error: function (data) {
             alert("error");
         }
@@ -100,24 +99,23 @@ function confirm(){
 
 function showAgentsPathForClick(result){
     paper = Raphael("holderOfBlock",1280,680);
-    drawEnvironment(environment);
-    showGuidelines(environment);
+    drawEnvironment(getEnvironment());
+    showGuidelines(getEnvironment());
     agentPath=result;
 }
 
 function runOnce() {
      currentStep++;
+     console.log(currentStep);
     if(!stateOfView){
-        console.log(currentStep);
         paper.remove();
         currentAgent = [];
-        var envi = environment;
         var resultOfMove = getAgentPath();
         paper = Raphael("holderOfBlock",1280,680);
 //-----------------------------block-----------------------------------------
-        drawEnvironment(environment);
+        drawEnvironment(rawEnvironment);
         drawPath(resultOfMove,currentStep-1);
-        showGuidelines(environment);
+        showGuidelines(rawEnvironment,resultOfMove);
     } else {
          graph(getEnvironment(),currentRegion,getAgentPath(),currentStep);
     }
@@ -131,17 +129,19 @@ function run() {
     }
 };
 
-function drawEnvironment(envi){
-
+function drawEnvironment(environ){
+    // var envi = environ;
+    var envi = jQuery.extend(true, {}, environ);
+    rawEnvironment = envi;
     for(var i = 0; i < envi.regions.length ; i++){
-        if(!envi.regions[i].color){
-            envi.regions[i].color = randomColor();
+        if(currentStep == 0){
+            envi.regions[i].colorOfRegion = randomColor();
         }
     }
 
     for(var i = 0; i < envi.agents.length ; i++){
-        if(!envi.agents[i].color){
-            envi.agents[i].color = randomColor();
+        if(currentStep == 0){
+            envi.agents[i].colorOfAgent = randomColor();
         }
     }
     var map = paper.set();
@@ -159,7 +159,7 @@ function drawEnvironment(envi){
         for(var j = 0; j < envi.regions[i].openSpaces.length ; j++){
                 map.forEach(function(e){
                     if(e.data("x")==envi.regions[i].openSpaces[j].x-1 && e.data("y") == envi.regions[i].openSpaces[j].y-1){
-                        e.attr({fill:"#FDFEFE" , stroke:envi.regions[i].color, "stroke-width":2});
+                        e.attr({fill:"#FDFEFE" , stroke:envi.regions[i].colorOfRegion, "stroke-width":2});
                     }
                 })
         }
@@ -169,13 +169,13 @@ function drawEnvironment(envi){
         var x = (((1280-envi.size.x*50)/2)+(envi.agents[i].position.x-1)*50)+25;
         var y = (100+(envi.agents[i].position.y-1)*50)+25;
         var node = paper.circle(x,y,7);
-        node.attr({fill: envi.agents[i].color});
+        node.attr({fill: envi.agents[i].colorOfAgent});
         paper.text(x,y,envi.agents[i].id);
     }
-}
+};
 
 function drawPath(r,totalSteps){
-    var envi = getEnvironment();
+    var envi = rawEnvironment;
     var setPath = [];
     for(var i =0; i<r.length;i++){
         if(totalSteps == 0){
@@ -205,38 +205,37 @@ function drawPath(r,totalSteps){
     wholePath.push(setPath);
     for(var i = 0 ; i < wholePath.length;i++){
         for(var j = 0; j< wholePath[i].length ; j++){
-            paper.path(wholePath[i][j]).attr({stroke : envi.agents[j].color, "stroke-width":2 });
+            paper.path(wholePath[i][j]).attr({stroke : envi.agents[j].colorOfAgent, "stroke-width":2 });
         }
     }
 }
 
-function showGuidelines(environment){
-    var envi = environment;
+function showGuidelines(path){
+    var envi = rawEnvironment;
+    var p = path;
     for(var i = 0 ; i<envi.agents.length ; i++){
         var x = 50;
         var y = i*50+120;
         var node = paper.circle(x,y,7);
-        node.attr({fill: envi.agents[i].color})
+        node.attr({fill: envi.agents[i].colorOfAgent})
         node.data("id" , i+1 );
         paper.text(75,i*50+120," : "+envi.agents[i].id);
         node.click(function(){
             comeToTop(this.data("id"));
         });
     }
-
     for(var i = 0 ; i<envi.regions.length ; i++){
         var x = 200;
         var y = i*50+120;
         var node = paper.rect(x,y,25,25);
-        node.attr({fill:"#FDFEFE" , stroke:envi.regions[i].color, "stroke-width":2});
+        node.attr({fill:"#FDFEFE" , stroke:envi.regions[i].colorOfRegion, "stroke-width":2});
         node.data("id" , i +1);
         paper.text(235,i*50+140," : "+envi.regions[i].id);
         node.click(function(){
             paper.remove();
-
             currentRegion = this.data("id");
             graph(getEnvironment(),currentRegion,getAgentPath(),currentStep);
-            switchGraph()
+            switchGraph();
             $("#returnButton").show();
             stateOfView=true;
         });
@@ -247,7 +246,7 @@ function comeToTop(aid){
     for(var i = 0 ; i < wholePath.length;i++){
         for(var j = 0; j< wholePath[i].length ; j++){
             if( j+1 == aid){
-                paper.path(wholePath[i][j]).attr({stroke : environment.agents[j].color, "stroke-width":2 });
+                paper.path(wholePath[i][j]).attr({stroke : rawEnvironment.agents[j].colorOfAgent, "stroke-width":2 });
             }
         }
     }
@@ -255,9 +254,10 @@ function comeToTop(aid){
 
     function returnToBlock(){
             $("#returnButton").hide();
-            currentStep--;
+            switchGraph();
             stateOfView=false;
+            currentStep--;
             runOnce();
-            switchGraph()
+            
         
     }

@@ -58,7 +58,6 @@ function graph(environment,regionID,agentPath,totalSteps){
     });
     }
 
-    console.log(JSON.stringify(agent));
 
 
     draw();
@@ -67,7 +66,6 @@ function graph(environment,regionID,agentPath,totalSteps){
       var offset = $(this).offset();
       var x=e.pageX - offset.left;
       var y=e.pageY - offset.top;
-      console.log("y:"+y);
     
       var showAgent=[];
       region.openSpaces.forEach((node)=>{
