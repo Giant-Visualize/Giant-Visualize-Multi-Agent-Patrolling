@@ -14,9 +14,9 @@ function switchGraph(){
     }
 }
 
-function graph(environment,regionID,agentPath,totalSteps){
-    console.log(JSON.stringify(environment));
-    console.log(totalSteps);
+function graph(Environment,regionID,agentPath,totalSteps){
+    var environment = jQuery.extend(true, {}, Environment);
+
     var c = document.getElementById("myCanvas");
     var ctx = c.getContext("2d");
     ctx.clearRect(0, 0, c.width, c.height);
@@ -43,25 +43,7 @@ function graph(environment,regionID,agentPath,totalSteps){
             currentAgentPath.push(a);
         }
     });
-  
-    if(totalSteps>0){
-       agent.forEach((a)=>{            //update agent position
-         currentAgentPath.forEach((ap)=>{
-            if(a.id==ap.id){ 
-                if(totalSteps<=ap.path.length){
-                    a.position.x=ap.path[totalSteps-1][0]+1;
-                    a.position.y=ap.path[totalSteps-1][1]+1;
-                }else{
-                    a.position.x=ap.path[ap.path.length-1][0]+1;
-                    a.position.y=ap.path[ap.path.length-1][1]+1;
-                }
-
-            }
-        });
-      });
-    }
-    
-
+      
     draw();
     
     $('#target').dblclick(function(e) {
@@ -70,19 +52,30 @@ function graph(environment,regionID,agentPath,totalSteps){
       var y=e.pageY - offset.top;
     
       var showAgent=[];
+
       region.openSpaces.forEach((node)=>{
-        if(Math.abs(leftGap+times*(node.x-min.x+1)-x)<=radius&&Math.abs(topGap+times*(node.y-min.y+1)-y)<=radius){
-            agent.forEach((a)=>{
-                 if(a.position.x==node.x&&a.position.y==node.y) showAgent.push(a);
-            });
-        }
+            if(Math.abs(leftGap+times*(node.x-min.x+1)-x)<=radius&&Math.abs(topGap+times*(node.y-min.y+1)-y)<=radius){
+                currentAgentPath.forEach((a) => {    //agent visist this open space
+                    var step=totalSteps;
+                    if(step>a.path.length-1)  step=a.path.length-1; //indentify Nst step
+
+                    if(a.path[step][0]+1==node.x&&a.path[step][1]+1==node.y){
+                        showAgent.push(a);
+                    }
+                });
+            }
        });
+
        var agentInfo="";
        if(showAgent.length>=1){
             showAgent.forEach((a)=>{
-            agentInfo+="Id: "+a.id+"\n"+"Coordinate: "+"("+a.position.x+","+a.position.y+")"+"\n";
-            agentInfo+="\n";
-            swal("",agentInfo, "success")
+                var step=totalSteps;
+                if(step>a.path.length-1)  step=a.path.length-1; //indentify Nst step
+
+                agentInfo+="Id: "+a.id+"\n"+"Coordinate: "+"("+a.path[step][0]+","+a.path[step][1]+")"+"\n";
+                agentInfo+="\n";
+                swal("",agentInfo, "success")
+ 
         });
        }else{
             agentInfo+="No agent here !"
@@ -126,43 +119,18 @@ function graph(environment,regionID,agentPath,totalSteps){
       ctx.strokeStyle = '#66CCCC';
       ctx.arc(leftGap+times*(d.x-min.x+1), topGap+times*(d.y-min.y+1), radius,0,  2 * Math.PI);
    
-       
-    //    environment.agents.forEach((a) => {    //agent visist this open space
-    //        if(a.region==regionID){
-    //            console.log(JSON.stringify(a));
-    //             if(a.position.x==d.x&&a.position.y==d.y){          
-    //                 ctx.fillStyle = '#66CCCC';
-    //                 ctx.fill();
-    //             }    
-    //        }
-  
-    //     });
-    if(totalSteps==0){
-        agent.forEach((a)=>{
-            if(a.position.x==d.x&&a.position.y==d.y) {
-                ctx.fillStyle = '#66CCCC';
-                ctx.fill();  
+        currentAgentPath.forEach((a) => {    //agent visist this open space
+            var step=totalSteps;
+            if(step>a.path.length-1)  step=a.path.length-1; //indentify Nst step
+
+            for(i=0;i<=step;i++){
+                    if(a.path[i][0]+1==d.x&&a.path[i][1]+1==d.y){
+                        ctx.fillStyle = '#66CCCC';
+                        ctx.fill();    
+                    }
             }
         });
-    }
 
-      if(totalSteps>0){
-        currentAgentPath.forEach((a) => {    //agent visist this open space
-            agent.forEach((ag)=>{
-                if(a.id=ag.id){
-                    var max=totalSteps;
-                    if(max>a.path.length)  max=a.path.length;
-  
-                    for(i=0;i<=max-1;i++){
-                         if(a.path[i][0]+1==d.x&&a.path[i][1]+1==d.y){
-                             ctx.fillStyle = '#66CCCC';
-                             ctx.fill();    
-                         }
-                    }
-                 }
-             });
-         });
-      }
       ctx.stroke();
   }
 
@@ -175,8 +143,13 @@ function graph(environment,regionID,agentPath,totalSteps){
       ctx.font="15px Arial";
 
       var count=0;
-      agent.forEach((a) => {      
-            if(a.position.x==d.x&&a.position.y==d.y) count++;    
+      currentAgentPath.forEach((a) => {    //agent visist this open space
+            var step=totalSteps;
+            if(step>a.path.length-1)  step=a.path.length-1; //indentify Nst step
+
+            if(a.path[step][0]+1==d.x&&a.path[step][1]+1==d.y){
+                count++; 
+            }
       });
 
       ctx.fillText(count, leftGap+times*(d.x-min.x+1), topGap+times*(d.y-min.y+1)+4);

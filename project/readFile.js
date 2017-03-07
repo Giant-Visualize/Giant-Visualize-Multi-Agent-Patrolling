@@ -117,7 +117,6 @@ function getSettings() {
 //Don't change the code above
 
 function getEnvironment(){
-    
     return environment;
 }
 

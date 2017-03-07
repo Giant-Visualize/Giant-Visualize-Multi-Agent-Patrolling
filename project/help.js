@@ -99,8 +99,9 @@ function confirm(){
 
 function showAgentsPathForClick(result){
     paper = Raphael("holderOfBlock",1280,680);
-    drawEnvironment(getEnvironment());
-    showGuidelines(getEnvironment());
+
+    drawEnvironment(rawEnvironment);
+    showGuidelines(rawEnvironment);
     agentPath=result;
 }
 
@@ -132,6 +133,7 @@ function run() {
 function drawEnvironment(environ){
     // var envi = environ;
     var envi = jQuery.extend(true, {}, environ);
+
     rawEnvironment = envi;
     for(var i = 0; i < envi.regions.length ; i++){
         if(currentStep == 0){
