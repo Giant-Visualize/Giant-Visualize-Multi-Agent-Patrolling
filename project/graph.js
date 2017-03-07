@@ -1,7 +1,7 @@
 
 var times=85;
 var leftGap=450;
-var topGap=10;
+var topGap=100;
 var radius=20;
 var min={};
 
@@ -15,6 +15,8 @@ function switchGraph(){
 }
 
 function graph(environment,regionID,agentPath,totalSteps){
+    console.log(JSON.stringify(environment));
+    console.log(totalSteps);
     var c = document.getElementById("myCanvas");
     var ctx = c.getContext("2d");
     ctx.clearRect(0, 0, c.width, c.height);
@@ -34,16 +36,17 @@ function graph(environment,regionID,agentPath,totalSteps){
          
         }
     });
-    
+
     var currentAgentPath=[]; //get agent paths in particular region
     agentPath.forEach((a)=>{
         if(a.region==regionID){
             currentAgentPath.push(a);
         }
     });
+  
     if(totalSteps>0){
-            agent.forEach((a)=>{            //update agent position
-        currentAgentPath.forEach((ap)=>{
+       agent.forEach((a)=>{            //update agent position
+         currentAgentPath.forEach((ap)=>{
             if(a.id==ap.id){ 
                 if(totalSteps<=ap.path.length){
                     a.position.x=ap.path[totalSteps-1][0]+1;
@@ -55,10 +58,9 @@ function graph(environment,regionID,agentPath,totalSteps){
 
             }
         });
-    });
+      });
     }
-
-
+    
 
     draw();
     
@@ -96,7 +98,6 @@ function graph(environment,regionID,agentPath,totalSteps){
                 if(min.x>node.x) min.x=node.x;
                 if(min.y>node.y) min.y=node.y;
              });
-
             region.openSpaces.forEach(drawNode); //draw circle
 
             region.openSpaces.forEach((node1) => {   //draw lines
@@ -124,20 +125,33 @@ function graph(environment,regionID,agentPath,totalSteps){
       ctx.beginPath();
       ctx.strokeStyle = '#66CCCC';
       ctx.arc(leftGap+times*(d.x-min.x+1), topGap+times*(d.y-min.y+1), radius,0,  2 * Math.PI);
-
-      if(totalSteps==0){
-       agent.forEach((a) => {    //agent visist this open space
-            if(a.position.x==d.x&&a.position.y==d.y){
-                 ctx.fillStyle = '#66CCCC';
-                 ctx.fill();
-            }      
+   
+       
+    //    environment.agents.forEach((a) => {    //agent visist this open space
+    //        if(a.region==regionID){
+    //            console.log(JSON.stringify(a));
+    //             if(a.position.x==d.x&&a.position.y==d.y){          
+    //                 ctx.fillStyle = '#66CCCC';
+    //                 ctx.fill();
+    //             }    
+    //        }
+  
+    //     });
+    if(totalSteps==0){
+        agent.forEach((a)=>{
+            if(a.position.x==d.x&&a.position.y==d.y) {
+                ctx.fillStyle = '#66CCCC';
+                ctx.fill();  
+            }
         });
-      }else{
+    }
+
+      if(totalSteps>0){
         currentAgentPath.forEach((a) => {    //agent visist this open space
             agent.forEach((ag)=>{
                 if(a.id=ag.id){
                     var max=totalSteps;
-                    if(max>a.path.lengh)  max=a.path.lengh;
+                    if(max>a.path.length)  max=a.path.length;
   
                     for(i=0;i<=max-1;i++){
                          if(a.path[i][0]+1==d.x&&a.path[i][1]+1==d.y){
