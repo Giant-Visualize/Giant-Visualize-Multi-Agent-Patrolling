@@ -12,6 +12,7 @@ app.get('/', (req, res) => {
 
 app.get('/file', function (req, res, next) {
     environment = req.query.environment;
+    console.log(environment);
     var agentsInfoStore=algorithm.getAgentPath(environment);
     console.log(agentsInfoStore);
     res.status(200).send(agentsInfoStore);

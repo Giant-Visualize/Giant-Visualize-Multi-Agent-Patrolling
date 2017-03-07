@@ -8,8 +8,9 @@ var agentCount = 0;
 var currentStep = 0;
 var currentAgent = [];
 var paper = {};
-var firstCreateGraph=true;
 var wholePath = [];
+var stateOfView = false;
+var currentRegion = 0;
 
 function init() {
     paper = Raphael("holderOfBlock",1280,1280);
@@ -22,8 +23,6 @@ function init() {
             }
         }
 
-    console.log(typeof(x));
-    console.log(Number.isInteger(x));
     if(Number.isInteger(x)&& Number.isInteger(y) && x>0 && y>0 && x<16 && y<16){
 
     var map = paper.set();
@@ -88,20 +87,41 @@ function confirm(){
     drawEnvironment(rawEnvironment);
     showGuidelines(rawEnvironment);
     environment = rawEnvironment;
+    $.ajax({
+        url: "/file",
+        method: "GET",
+        data: { environment: environment},
+        success:showAgentsPathForClick,
+        error: function (data) {
+            alert("error");
+        }
+    });
 };
 
-function runOnce() {
-    paper.remove();
-    currentAgent = [];
-    var envi = environment;
-    // var resultOfMove = move(agentArray,environmentOfAll);
-    var resultOfMove = getAgentPath();
-
+function showAgentsPathForClick(result){
     paper = Raphael("holderOfBlock",1280,680);
-//-----------------------------block-----------------------------------------
     drawEnvironment(environment);
-    drawPath(resultOfMove);
     showGuidelines(environment);
+    agentPath=result;
+}
+
+function runOnce() {
+     currentStep++;
+    if(!stateOfView){
+        console.log(currentStep);
+        paper.remove();
+        currentAgent = [];
+        var envi = environment;
+        var resultOfMove = getAgentPath();
+        paper = Raphael("holderOfBlock",1280,680);
+//-----------------------------block-----------------------------------------
+        drawEnvironment(environment);
+        drawPath(resultOfMove,currentStep-1);
+        showGuidelines(environment);
+    } else {
+         graph(getEnvironment(),currentRegion,getAgentPath(),currentStep);
+    }
+    
 };
 
 function run() {
@@ -111,32 +131,8 @@ function run() {
     }
 };
 
-function switchView(){
-    if($("#graphView").is(':checked') == true){
-        paper.remove();
-        var mapForGra = [];
-        for(var i = 0 ; i<environmentOfAll.length ; i++){
-            for(var j = 0 ; j<environmentOfAll.length ; j++){
-                if(environmentOfAll[i][j] == 0){
-                    mapForGra.push({x : i , y : j});
-                }
-            }
-        }
-        console.log(currentAgent);
-        if(firstCreateGraph){
-            graph(mapForGra,currentAgent);
-            firstCreateGraph=false;
-        }
-        switchGraph();
-
-    }else{
-        currentStep--;
-        runOnce();
-        switchGraph();
-    }
-};
-
 function drawEnvironment(envi){
+
     for(var i = 0; i < envi.regions.length ; i++){
         if(!envi.regions[i].color){
             envi.regions[i].color = randomColor();
@@ -178,23 +174,23 @@ function drawEnvironment(envi){
     }
 }
 
-function drawPath(r){
-    var envi = environment;
+function drawPath(r,totalSteps){
+    var envi = getEnvironment();
     var setPath = [];
     for(var i =0; i<r.length;i++){
-        if(currentStep == 0){
+        if(totalSteps == 0){
             var agentStartX = (((1280-envi.size.x*50)/2)+(envi.agents[i].position.x-1)*50)+25;
             var agentStartY = (100+(envi.agents[i].position.y-1)*50)+25;
-            var agentEndX = (((1280-envi.size.x*50)/2)+(r[i].path[currentStep][0])*50)+25;
-            var agentEndY = (100+(r[i].path[currentStep][1])*50)+25;
-        } else if(r[i].path[currentStep]){
-            var agentStartX = (((1280-envi.size.x*50)/2)+(r[i].path[currentStep-1][0])*50)+25;
-            var agentStartY = (100+(r[i].path[currentStep-1][1])*50)+25;
-            var agentEndX = (((1280-envi.size.x*50)/2)+(r[i].path[currentStep][0])*50)+25;
-            var agentEndY = (100+(r[i].path[currentStep][1])*50)+25;
-        } else if(r[i].path[currentStep-1]){
-            var agentStartX = (((1280-envi.size.x*50)/2)+(r[i].path[currentStep-1][0])*50)+25;
-            var agentStartY = (100+(r[i].path[currentStep-1][1])*50)+25;
+            var agentEndX = (((1280-envi.size.x*50)/2)+(r[i].path[totalSteps][0])*50)+25;
+            var agentEndY = (100+(r[i].path[totalSteps][1])*50)+25;
+        } else if(r[i].path[totalSteps]){
+            var agentStartX = (((1280-envi.size.x*50)/2)+(r[i].path[totalSteps-1][0])*50)+25;
+            var agentStartY = (100+(r[i].path[totalSteps-1][1])*50)+25;
+            var agentEndX = (((1280-envi.size.x*50)/2)+(r[i].path[totalSteps][0])*50)+25;
+            var agentEndY = (100+(r[i].path[totalSteps][1])*50)+25;
+        } else if(r[i].path[totalSteps-1]){
+            var agentStartX = (((1280-envi.size.x*50)/2)+(r[i].path[totalSteps-1][0])*50)+25;
+            var agentStartY = (100+(r[i].path[totalSteps-1][1])*50)+25;
             var agentEndX = (((1280-envi.size.x*50)/2)+(r[i].path[r[i].path.length-1][0])*50)+25;
             var agentEndY = (100+(r[i].path[r[i].path.length-1][1])*50)+25;
         } else {
@@ -233,12 +229,21 @@ function showGuidelines(environment){
         var y = i*50+120;
         var node = paper.rect(x,y,25,25);
         node.attr({fill:"#FDFEFE" , stroke:envi.regions[i].color, "stroke-width":2});
+        node.data("id" , i +1);
         paper.text(235,i*50+140," : "+envi.regions[i].id);
+        node.click(function(){
+            paper.remove();
+
+            currentRegion = this.data("id");
+            graph(getEnvironment(),currentRegion,getAgentPath(),currentStep);
+            switchGraph()
+            $("#returnButton").show();
+            stateOfView=true;
+        });
     }
 }
 
 function comeToTop(aid){
-    console.log(aid);
     for(var i = 0 ; i < wholePath.length;i++){
         for(var j = 0; j< wholePath[i].length ; j++){
             if( j+1 == aid){
@@ -248,17 +253,11 @@ function comeToTop(aid){
     }
 }
 
-    function switchView(){
-        if($("#graphView").is(':checked') == true){
-            paper.remove();
-            if(firstCreateGraph){
-                graph(getEnvironment(),1,getAgentPath(),1,2);
-                firstCreateGraph=false;
-            }
-            switchGraph()
-        }else{
+    function returnToBlock(){
+            $("#returnButton").hide();
             currentStep--;
+            stateOfView=false;
             runOnce();
             switchGraph()
-        }
+        
     }

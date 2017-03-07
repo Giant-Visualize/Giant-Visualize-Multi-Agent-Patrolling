@@ -6,7 +6,6 @@
         <script src="raphael.js"></script>
         <script src="graph.js"> </script>
         <script src="help.js"></script>
-        <script src="MoveAgents.js"></script>
         <link rel="stylesheet" href ="style.css" type="text/css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   	    <script src="https://code.jquery.com/jquery-2.2.0.js"></script>
@@ -56,15 +55,11 @@
       </sub>
       </div>
 
-      <label class = "agentLabel">Switch View:</label>
       <div class="form-group">
-      <sub>
-      <label class="switch">
-          <input type="checkbox" id = "graphView" onchange = "switchView()">
-            <div class="slider round"></div>
-        </label>
-      </sub>
-      </div>
+    		<button type="button" id = "returnButton" class="btn btn-primary" onclick="returnToBlock()" style="display:none"> Return </button>
+  		</div>
+
+
 
       </form>
       </div>
@@ -74,7 +69,7 @@
     	  <!--Please name the id='fileUpload' onchange='readFile()'-->
         <input type="file" name="fileUpload" value="fileUpload" id="fileUpload" onchange="readFile()">
         <!--Please write onclick='getSettings()'-->
-        <input type="button" value="submit" onclick="getSettings()">
+        <button type="button" class = "btn btn-primary" onclick="getSettings()">Submit</button>
       </form>
       </div>
 

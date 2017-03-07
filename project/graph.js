@@ -14,7 +14,7 @@ function switchGraph(){
     }
 }
 
-function graph(environment,regionID,agentPath,step,totalSteps){
+function graph(environment,regionID,agentPath,totalSteps){
     var c = document.getElementById("myCanvas");
     var ctx = c.getContext("2d");
     ctx.clearRect(0, 0, c.width, c.height);
@@ -41,8 +41,8 @@ function graph(environment,regionID,agentPath,step,totalSteps){
             currentAgentPath.push(a);
         }
     });
-
-    agent.forEach((a)=>{            //update agent position
+    if(totalSteps>0){
+            agent.forEach((a)=>{            //update agent position
         currentAgentPath.forEach((ap)=>{
             if(a.id==ap.id){ 
                 if(totalSteps<=ap.path.length){
@@ -56,6 +56,8 @@ function graph(environment,regionID,agentPath,step,totalSteps){
             }
         });
     });
+    }
+
     console.log(JSON.stringify(agent));
 
 
@@ -125,7 +127,7 @@ function graph(environment,regionID,agentPath,step,totalSteps){
       ctx.strokeStyle = '#66CCCC';
       ctx.arc(leftGap+times*(d.x-min.x+1), topGap+times*(d.y-min.y+1), radius,0,  2 * Math.PI);
 
-      if(step==0){
+      if(totalSteps==0){
        agent.forEach((a) => {    //agent visist this open space
             if(a.position.x==d.x&&a.position.y==d.y){
                  ctx.fillStyle = '#66CCCC';

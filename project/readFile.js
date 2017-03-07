@@ -126,6 +126,10 @@ function getAgentPath(){
 }
 //allAgentsPaths below is the data you need to display
 function showAgentsPath(allAgentsPaths) {
+    paper = Raphael("holderOfBlock",1280,680);
+    drawEnvironment(environment);
+    showGuidelines(environment);
+    console.log(environment);
     agentPath=allAgentsPaths;
     // console.log(JSON.stringify(allAgentsPaths));
 }
