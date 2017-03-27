@@ -17,9 +17,7 @@ app.get('/', (req, res) => {
 
 app.get('/file', function (req, res, next) {
     environment = req.query.environment;
-    console.log(environment);
     var agentsInfoStore=algorithm.getAgentPath(environment);
-    console.log(agentsInfoStore);
     res.status(200).send(agentsInfoStore);
 });
 
@@ -30,8 +28,22 @@ app.get('/history', function (req, res, next) {
 
 app.post('/saveRun', function (req, res, next) {
   var date=req.body.date;
-  console.log(date);
-  search.saveRunInfo(req, res,date);
+  var size=req.body.size;
+  var coordinate=req.body.coordinate;
+  var targetlist=req.body.targetlist;  
+  var agentpath=req.body.agentpath; 
+  var step=req.body.step; 
+
+  // console.log("--------------------");
+  // console.log(date);
+  // console.log(size);
+  // console.log(coordinate);
+  // console.log(targetlist);
+  // console.log(agentpath);
+  // console.log(step);
+  // console.log("--------------------");
+
+  search.saveRunInfo(req, res,date,size,coordinate,targetlist,agentpath,step);
 });
 
 // app.get('/test', (req, res) => {

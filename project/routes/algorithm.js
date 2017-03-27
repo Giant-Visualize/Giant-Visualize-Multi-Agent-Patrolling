@@ -4,23 +4,20 @@ var http = require("http");
 var router = express.Router();
 var PF = require('pathfinding');
 
-
-
 /*
  *Don't change the code below 
- */
-var targetList = []; 
+ */ 
 var envMatrix;
 var environment;
 //get the target and get the path to the target
 //set agent pisotion to the target
 //push the result to agentsInfoStore
 //agentsInfoStore: id, region, path
-function chooseTargetsAndGetPaths(agentsInfo) {
+function chooseTargetsAndGetPaths(agentsInfo, targetList) {
     var agentsInfoStore = [];
     while (targetList.length > 0) {
         for (var i = 0; i < agentsInfo.length; i++) {
-            var target = chooseTarget(agentsInfo[i]);
+            var target = chooseTarget(agentsInfo[i], targetList);
             if (target) {
                 agentsInfoStore.push(AgentPathInfo(agentsInfo[i].id, agentsInfo[i].region, shortestPath(agentsInfo[i].position, target)));
                 agentsInfo[i].position = target;
@@ -52,10 +49,21 @@ function processAgentsMoveInfo(agentsInfoStore) {
             agentsInfoStore.pop();
         }
     }
+
+    var env = environment;
+    var agentInfo = getAgentsInfo(env);
+    for(var n=0;n<agentInfo.length; n++){
+	 if (agentsInfoStore[n].id === agentInfo[n].id) {
+            var position = [];
+            position.push(agentInfo[n].position.x - 1);
+            position.push(agentInfo[n].position.y - 1);
+            agentsInfoStore[n].path.unshift(position); 
+        }
+    }
 }
 //write the run information to file 
 //including; region id, region coordinates, target list for this region, agents' paths
-function writeRunInfoToFile(agentsInfoStore,environment) {
+function writeRunInfoToFile(agentsInfoStore) {
     var runStatistics = [];
     var envRegions = environment.regions;
     var numOfOpenSpaces = 0;
@@ -77,11 +85,6 @@ function writeRunInfoToFile(agentsInfoStore,environment) {
 
     var fileName = environment.size.x + 'x' + environment.size.y + '-#R' + envRegions.length + '-#A' + environment.agents.length + '-#OS' + numOfOpenSpaces + '#DATE'+Date.now();
     var content = JSON.stringify(runStatistics);
-    fs.writeFile(fileName, content, (err) => {
-            if (err) throw err;
-            console.log("success!!!!");
-    });
-    
 }
 
 function RegionInfoToSave(id, coordinates, targetList, agents) {
@@ -102,7 +105,7 @@ function AgentPathInfo(id, region, path) {
 }
 //find a target for an agent.
 //The rule to choose target is that choose the every posotoin in the targetList
-function chooseTarget(agent) {
+function chooseTarget(agent, targetList) {
     var target;
     for (var i = 0; i < targetList.length; i++) {
         if (targetList[i].regionId === agent.region) {
@@ -163,6 +166,7 @@ function Target(regionId, position) {
 
 //get target List
 function getTargetList(environment) {
+    var targetList = [];
     var agentsPosition = [];
     for (var i = 0; i < environment.agents.length; i++) {
         var agentPosi = environment.agents[i].position;
@@ -178,6 +182,7 @@ function getTargetList(environment) {
             }
         }
     }
+    return targetList;
 }
 
 function Node(x, y) {
@@ -187,13 +192,28 @@ function Node(x, y) {
     return node;
 }
 
-function getAgentPath(environment){
-    environment=environment;
-    readEnvironment(environment);
-    getTargetList(environment);
-    var agentsInfo = getAgentsInfo(environment);
-    var agentsInfoStore = chooseTargetsAndGetPaths(agentsInfo);//return to client
-    writeRunInfoToFile(agentsInfoStore,environment);
+function AgentInfo(id, position, region) {
+    this.id = id;
+    this.position = position;
+    this.region = region;
+}
+function copyAgentsInfo(agentsInfo) {
+    var copyAgentsInfoArray = [];
+    for (var i = 0; i < agentsInfo.length; i++) {
+        copyAgentsInfoArray.push(new AgentInfo(agentsInfo[i].id, agentsInfo[i].position, agentsInfo[i].region));
+    }
+    return copyAgentsInfoArray;
+}
+
+
+function getAgentPath(env){
+    environment=env;
+    readEnvironment(env);
+   var targetList =  getTargetList(env);
+    var agentsInfo = getAgentsInfo(env);
+    var copyAgentInfo = copyAgentsInfo(agentsInfo);
+    var agentsInfoStore = chooseTargetsAndGetPaths(copyAgentInfo, targetList);//return to client
+    writeRunInfoToFile(agentsInfoStore);
     return agentsInfoStore;
 }
 module.exports.getAgentPath=getAgentPath;

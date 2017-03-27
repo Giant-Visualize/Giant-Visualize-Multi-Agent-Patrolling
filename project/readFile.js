@@ -103,7 +103,6 @@ function Region(id, openSpaces) {
  */
 
 function getSettings() {
-    console.log(environment);
     $.ajax({
         url: "/file",
         method: "GET",
@@ -130,7 +129,10 @@ function showAgentsPath(allAgentsPaths) {
     drawEnvironment(getEnvironment());
     showGuidelines(getEnvironment());
     agentPath=allAgentsPaths;
-    // console.log(JSON.stringify(allAgentsPaths));
+
+
+    saveRunInfo();  //save information
+
 }
 
 
@@ -148,10 +150,31 @@ console.log(JSON.stringify(data));
 }
 
 function saveRunInfo() {
+    var date=new Date();
+    var timestamp=Math.round(date.getTime());
+
+    // var size=JSON.stringify(environment.size.x)+"X"+JSON.stringify(environment.size.y);
+    var size=environment.size.x+"X"+environment.size.y;
+
+    var coordinate=JSON.stringify(environment.regions);
+
+    var targetlist="";
+
+     var agentpath=JSON.stringify(JSON.stringify(agentPath));
+
+     var step=11;
+
     $.ajax({
         url: "/saveRun",
         method: "POST",
-        data: { date: "2017-03-25"},
+        data: {
+            date:timestamp,
+            size:size,
+            coordinate:coordinate,
+            targetlist: targetlist,
+            agentpath: agentpath,
+            step:step
+        },
         success:showDate,
     });
 }
