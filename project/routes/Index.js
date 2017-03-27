@@ -1,8 +1,13 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var app = express();
 var algorithm=require('./algorithm')
+var search=require('./search')
 
-
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(bodyParser.json());
 
 app.use(express.static(__dirname + '/..'));
 
@@ -16,6 +21,17 @@ app.get('/file', function (req, res, next) {
     var agentsInfoStore=algorithm.getAgentPath(environment);
     console.log(agentsInfoStore);
     res.status(200).send(agentsInfoStore);
+});
+
+app.get('/history', function (req, res, next) {
+  var date=req.query.date ;
+  search.getRunInfo(req, res,date);
+});
+
+app.post('/saveRun', function (req, res, next) {
+  var date=req.body.date;
+  console.log(date);
+  search.saveRunInfo(req, res,date);
 });
 
 // app.get('/test', (req, res) => {

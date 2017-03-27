@@ -114,6 +114,7 @@ function getSettings() {
         }
     });
 }
+
 //Don't change the code above
 
 function getEnvironment(){
@@ -132,4 +133,26 @@ function showAgentsPath(allAgentsPaths) {
     // console.log(JSON.stringify(allAgentsPaths));
 }
 
+
+function getRunInfo() {
+    $.ajax({
+        url: "/history",
+        method: "GET",
+        data: { date: "2017-03-25"},
+        success:showDate,
+    });
+}
+
+function showDate(data){
+console.log(JSON.stringify(data));
+}
+
+function saveRunInfo() {
+    $.ajax({
+        url: "/saveRun",
+        method: "POST",
+        data: { date: "2017-03-25"},
+        success:showDate,
+    });
+}
 

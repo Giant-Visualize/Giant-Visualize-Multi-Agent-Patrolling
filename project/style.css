@@ -77,3 +77,16 @@ input:checked + .slider:before {
 .agentLabel{
     margin-left: 30px;
 }
+
+.container1{
+  text-align: center;
+    margin: auto;
+    width: 60%;
+    padding: 10px;
+}
+
+.container2{
+    margin: auto;
+    width: 80%;
+    padding: 10px;
+}

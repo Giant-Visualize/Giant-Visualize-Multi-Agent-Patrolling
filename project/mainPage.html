@@ -58,11 +58,9 @@
       <div class="form-group">
     		<button type="button" id = "returnButton" class="btn btn-primary" onclick="returnToBlock()" style="display:none"> Return </button>
   		</div>
-
-
-
       </form>
       </div>
+
       <!--upload file-->
       <div id = "regionMenu">
       <form class="form-inline well well-sm">
@@ -70,8 +68,15 @@
         <input type="file" name="fileUpload" value="fileUpload" id="fileUpload" onchange="readFile()">
         <!--Please write onclick='getSettings()'-->
         <button type="button" class = "btn btn-primary" onclick="getSettings()">Submit</button>
+
+        <div class="form-group">
+    		<button type="button" id = "serachButton" class="btn btn-primary" onclick="jumpToHistoryPage()"> History </button>
+  		 </div>
+       
       </form>
       </div>
+
+      
 
       <form class="form-inline well well-sm" id = "runMenu">
       <div class="form-group">

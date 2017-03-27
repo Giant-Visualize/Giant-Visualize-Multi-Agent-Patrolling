@@ -259,7 +259,9 @@ function comeToTop(aid){
             switchGraph();
             stateOfView=false;
             currentStep--;
-            runOnce();
-            
-        
+            runOnce();    
+    }
+
+    function jumpToHistoryPage(){
+        window.location.href = "history.html";
     }
