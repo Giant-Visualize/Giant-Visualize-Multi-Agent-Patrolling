@@ -9,50 +9,43 @@
         <link rel="stylesheet" href ="style.css" type="text/css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
         <link type="text/css" rel="stylesheet" href="node_modules/materialize-css/bin/materialize.css"  media="screen,projection"/>
-
-        <script src="raphael.js"></script>
-        <script src="graph.js"> </script>
-        <script src="help.js"></script>
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
+        
+        <script src="history.js"></script>
         
   	    <script src="https://code.jquery.com/jquery-2.2.0.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.1.1.js"
             integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
-            crossorigin="anonymous">
-        </script>
+            crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script src="readFile.js"></script>
         <script src="randomColor.js"></script>
         <script src="node_modules/sweetalert/dist/sweetalert.min.js"></script>
         <script src="node_modules/materialize-css/bin/materialize.js"></script>
-        
-
       </head>
+
+
       <body>
       <div style="text-align: center;">
         <h3>Running History</h3>
       </div>
 
       <div class="container1">
-    	<input type="text" id = "x" placeholder="date" style="width:30% ;text-align: center;" >
-      <button type="button" class="btn btn-primary" onclick="saveRunInfo()"> Search</button>
+    	<input type="text" id = "datepicker" placeholder="date" style="width:30% ;text-align: center;" onclick="chooseDate()" >
+      <button type="button" class="btn btn-primary" onclick="getRunInfo(getSearchDate(),1)"> Search</button>
       </div>
 
 
     <div class="container2">
     <ul class="collapsible" data-collapsible="accordion">
     <li>
-      <div class="collapsible-header">First</div>
-      <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+      <!--<div class="collapsible-header">First</div>
+      <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>-->
     </li>
-    <li>
-      <div class="collapsible-header">Second</div>
-      <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
-    </li>
-    <li>
-      <div class="collapsible-header">Third</div>
-      <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
-    </li>
+
   </ul>
   </div>
 

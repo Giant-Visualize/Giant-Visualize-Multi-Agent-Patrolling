@@ -262,6 +262,3 @@ function comeToTop(aid){
             runOnce();    
     }
 
-    function jumpToHistoryPage(){
-        window.location.href = "history.html";
-    }

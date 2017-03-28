@@ -135,25 +135,27 @@ function showAgentsPath(allAgentsPaths) {
 
 }
 
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
 
-function getRunInfo() {
-    $.ajax({
-        url: "/history",
-        method: "GET",
-        data: { date: "2017-03-25"},
-        success:showDate,
-    });
-}
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
 
-function showDate(data){
-console.log(JSON.stringify(data));
+    return [year, month, day].join('-');
 }
 
 function saveRunInfo() {
-    var date=new Date();
-    var timestamp=Math.round(date.getTime());
+    // var date=new Date();
+    // var timestamp=Math.round(date.getTime());
+    // var d=new Date(timestamp);
+    // var s=(d.getMonth()+1)+'-' + date.getDate() + '-' + date.getFullYear();
 
-    // var size=JSON.stringify(environment.size.x)+"X"+JSON.stringify(environment.size.y);
+    var date=formatDate(new Date()); //get YY-MM-DD
+    console.log(date);
+
     var size=environment.size.x+"X"+environment.size.y;
 
     var coordinate=JSON.stringify(environment.regions);
@@ -168,14 +170,15 @@ function saveRunInfo() {
         url: "/saveRun",
         method: "POST",
         data: {
-            date:timestamp,
+            date:date,
             size:size,
             coordinate:coordinate,
             targetlist: targetlist,
             agentpath: agentpath,
             step:step
         },
-        success:showDate,
+
     });
 }
+
 
