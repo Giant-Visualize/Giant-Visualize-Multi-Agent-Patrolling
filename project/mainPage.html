@@ -26,7 +26,7 @@
       <div id = titleOfSystem>
         <h3>Visualize Multi-Agent Patrolling</h3>
       </div>
-      <div id = "guidMenu">
+      <!--<div id = "guidMenu">
       <form class="form-inline well well-sm">
     	<div class="form-group">
     		<label>Length</label>
@@ -54,6 +54,19 @@
             <div class="slider round"></div>
         </label>
       </sub>
+      </div>-->
+
+      <div id = "guidMenu">
+      <form class="form-inline well well-sm">
+    	  <div class="form-group">
+    		  <label for="sel1">Select Algorithms:</label>
+            <select class="form-control" id="algorithmsType" onchange="setAlgorithmsType()">
+              <option>Free form</option>
+              <option>constrained-3</option>
+              <option>constrained-4</option>
+            </select>
+  		  </div>
+	    </form>
       </div>
 
       <div class="form-group">

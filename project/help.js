@@ -11,6 +11,7 @@ var paper = {};
 var wholePath = [];
 var stateOfView = false;
 var currentRegion = 0;
+var algoType="";
 
 function init() {
     paper = Raphael("holderOfBlock",1280,1280);
@@ -97,6 +98,14 @@ function confirm(){
     });
 };
 
+function setAlgorithmsType(){
+    algoType=$('#algorithmsType').find(":selected").text();
+}
+
+function getAlgorithmsType(){
+    return algoType;
+}
+
 function showAgentsPathForClick(result){
     paper = Raphael("holderOfBlock",1280,680);
 
@@ -111,7 +120,7 @@ function runOnce() {
     if(!stateOfView){
         paper.remove();
         currentAgent = [];
-        var resultOfMove = getAgentPath();
+        var resultOfMove = jQuery.extend(true, {}, getAgentPath());
         paper = Raphael("holderOfBlock",1280,680);
 //-----------------------------block-----------------------------------------
         drawEnvironment(rawEnvironment);
