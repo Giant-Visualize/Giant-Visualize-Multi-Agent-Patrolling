@@ -167,10 +167,15 @@ function drawEnvironment(environ){
     map.attr({fill: "#389CDE"});
 
     for(var i = 0; i < envi.regions.length ; i++){
+        var rawX = envi.regions[i].openSpaces[0].x;
+        var rawY = envi.regions[i].openSpaces[0].y;
+        var regionX = (((1280-envi.size.x*50)/2)+(rawX-1)*50);
+        var regionY = (100+(rawY-1)*50);
+        paper.text(regionX,regionY,i+1);
         for(var j = 0; j < envi.regions[i].openSpaces.length ; j++){
                 map.forEach(function(e){
                     if(e.data("x")==envi.regions[i].openSpaces[j].x-1 && e.data("y") == envi.regions[i].openSpaces[j].y-1){
-                        e.attr({fill:"#FDFEFE" , stroke:envi.regions[i].colorOfRegion, "stroke-width":2});
+                        e.attr({fill:"#FDFEFE" , stroke:"#000000", "stroke-width":2});
                     }
                 })
         }
