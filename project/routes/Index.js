@@ -23,7 +23,8 @@ app.get('/file', function (req, res, next) {
 
 app.get('/history', function (req, res, next) {
   var date=req.query.date ;
-  search.getRunInfo(req, res,date);
+  var id=req.query.id;
+  search.getRunInfo(req, res,date,id);
 });
 
 app.post('/saveRun', function (req, res, next) {

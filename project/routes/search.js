@@ -1,8 +1,13 @@
 var db= require("./db");
 var mysql= require("mysql");
 
-function getRunInfo(req, res,date){
-    var sql="SELECT * FROM runInfo WHERE date=("+mysql.escape(date)+")";
+function getRunInfo(req, res,date,id){
+    if(id==""){
+        var sql="SELECT * FROM runInfo WHERE date=("+mysql.escape(date)+")";
+    }else{
+        var sql="SELECT * FROM runInfo WHERE date=("+mysql.escape(date)+") AND id=("+mysql.escape(id)+")" ;
+    }
+    
     console.log(sql);
     db.excuteSql(sql,function(data, err){
         console.log(data);

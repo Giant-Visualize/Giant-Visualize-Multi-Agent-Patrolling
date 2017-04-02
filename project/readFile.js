@@ -129,56 +129,10 @@ function showAgentsPath(allAgentsPaths) {
     drawEnvironment(getEnvironment());
     showGuidelines(getEnvironment());
     agentPath=allAgentsPaths;
-
-
-    saveRunInfo();  //save information
-
 }
 
-function formatDate(date) {
-    var d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
 
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
 
-    return [year, month, day].join('-');
-}
 
-function saveRunInfo() {
-    // var date=new Date();
-    // var timestamp=Math.round(date.getTime());
-    // var d=new Date(timestamp);
-    // var s=(d.getMonth()+1)+'-' + date.getDate() + '-' + date.getFullYear();
-
-    var date=formatDate(new Date()); //get YY-MM-DD
-    console.log(date);
-
-    var size=environment.size.x+"X"+environment.size.y;
-
-    var coordinate=JSON.stringify(environment.regions);
-
-    var targetlist="";
-
-     var agentpath=JSON.stringify(JSON.stringify(agentPath));
-
-     var step=11;
-
-    $.ajax({
-        url: "/saveRun",
-        method: "POST",
-        data: {
-            date:date,
-            size:size,
-            coordinate:coordinate,
-            targetlist: targetlist,
-            agentpath: agentpath,
-            step:step
-        },
-
-    });
-}
 
 
