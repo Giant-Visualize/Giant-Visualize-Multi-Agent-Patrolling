@@ -114,6 +114,7 @@ function setAlgorithmsType(){
 }
 
 function getAlgorithmsType(){
+    console.log(algoType);
     return algoType;
 }
 

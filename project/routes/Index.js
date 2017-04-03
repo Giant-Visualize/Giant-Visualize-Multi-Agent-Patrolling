@@ -17,7 +17,14 @@ app.get('/', (req, res) => {
 
 app.get('/file', function (req, res, next) {
     environment = req.query.environment;
-    var agentsInfoStore=algorithm.getAgentPath(environment);
+    algorithmName=req.query.algo;
+    var agentsInfoStore=[];
+    if(algorithmName=="constrained-3"){
+        agentsInfoStore=algorithm.constrain3(environment);
+    }else{
+        agentsInfoStore=algorithm.getAgentPath(environment);
+    }
+
     res.status(200).send(agentsInfoStore);
 });
 
