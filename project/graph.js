@@ -129,7 +129,6 @@ function graph(Environment,regionID,agentPath,totalSteps){
             ctx.fillText("Target list",leftGap+times*(max-min.x+i),topGap+times*(j));
             j+=0.5;
             currentAgent.forEach((p)=>{
-                console.log(leftGap+times*(max-min.x+i));
                 ctx.fillText("("+(p.path[1][0]+1)+","+(p.path[1][1]+1)+")",(leftGap+times*(max-min.x+i)),topGap+times*(j));
                 i+=0.6;
                 

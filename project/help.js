@@ -12,6 +12,7 @@ var wholePath = [];
 var stateOfView = false;
 var currentRegion = 0;
 var algoType="";
+var resultOfMove = {};
 
 function init() {
     paper = Raphael("holderOfBlock",1280,1280);
@@ -98,8 +99,18 @@ function confirm(){
     });
 };
 
+function showSelectPage(){
+    $('#guidMenu').show();
+    $('#regionMenu').hide();
+    $('#returnButton').hide();
+    $('#runMenu').hide();
+}
+
 function setAlgorithmsType(){
     algoType=$('#algorithmsType').find(":selected").text();
+    $('#guidMenu').hide();
+    $('#regionMenu').show();
+    $('#runMenu').show();
 }
 
 function getAlgorithmsType(){
@@ -116,18 +127,17 @@ function showAgentsPathForClick(result){
 
 function runOnce() {
      currentStep++;
-     console.log(currentStep);
     if(!stateOfView){
         paper.remove();
         currentAgent = [];
-        var resultOfMove = jQuery.extend(true, {}, getAgentPath());
         paper = Raphael("holderOfBlock",1280,680);
 //-----------------------------block-----------------------------------------
-        drawEnvironment(rawEnvironment);
-        drawPath(resultOfMove,currentStep-1);
+        drawEnvironment(rawEnvironment,resultOfMove);
+        drawPath(resultOfMove,currentStep);
         showGuidelines(rawEnvironment,resultOfMove);
     } else {
          graph(getEnvironment(),currentRegion,getAgentPath(),currentStep);
+         drawPath(resultOfMove,currentStep);
     }
     
 };
@@ -139,10 +149,11 @@ function run() {
     }
 };
 
-function drawEnvironment(environ){
+function drawEnvironment(environ,pth){
     // var envi = environ;
     var envi = jQuery.extend(true, {}, environ);
 
+    resultOfMove = jQuery.extend(true, [], pth);
     rawEnvironment = envi;
     for(var i = 0; i < envi.regions.length ; i++){
         if(currentStep == 0){
@@ -169,8 +180,8 @@ function drawEnvironment(environ){
     for(var i = 0; i < envi.regions.length ; i++){
         var rawX = envi.regions[i].openSpaces[0].x;
         var rawY = envi.regions[i].openSpaces[0].y;
-        var regionX = (((1280-envi.size.x*50)/2)+(rawX-1)*50);
-        var regionY = (100+(rawY-1)*50);
+        var regionX = (((1280-envi.size.x*50)/2)+(rawX-1)*50+10);
+        var regionY = (100+(rawY-1)*50 + 10);
         paper.text(regionX,regionY,i+1);
         for(var j = 0; j < envi.regions[i].openSpaces.length ; j++){
                 map.forEach(function(e){
@@ -194,6 +205,7 @@ function drawPath(r,totalSteps){
     var envi = rawEnvironment;
     var setPath = [];
     for(var i =0; i<r.length;i++){
+
         if(totalSteps == 0){
             var agentStartX = (((1280-envi.size.x*50)/2)+(envi.agents[i].position.x-1)*50)+25;
             var agentStartY = (100+(envi.agents[i].position.y-1)*50)+25;
@@ -221,7 +233,9 @@ function drawPath(r,totalSteps){
     wholePath.push(setPath);
     for(var i = 0 ; i < wholePath.length;i++){
         for(var j = 0; j< wholePath[i].length ; j++){
-            paper.path(wholePath[i][j]).attr({stroke : envi.agents[j].colorOfAgent, "stroke-width":2 });
+            try{
+                paper.path(wholePath[i][j]).attr({stroke : envi.agents[j].colorOfAgent, "stroke-width":2 });
+            }catch(e){}  
         }
     }
 }

@@ -6,7 +6,7 @@ var PF = require('pathfinding');
 
 /*
  *Don't change the code below 
- */
+ */ 
 var envMatrix;
 var environment;
 //get the target and get the path to the target
@@ -15,40 +15,86 @@ var environment;
 //agentsInfoStore: id, region, path
 function chooseTargetsAndGetPaths(agentsInfo, targetList) {
     var agentsInfoStore = [];
-    var visitedPath = [];
-    var targetListArray = [];
-    for (var i = 0; i < agentsInfo.length; i++) {
-        var target = chooseTarget(agentsInfo[i], targetList);
-        var array = [];
-        visitedPath.push(new visitedPathConstrator(agentsInfo[i].id, agentsInfo[i].region, array));
-        if (target) {
-            agentsInfoStore.push(AgentPathInfo(agentsInfo[i].id, agentsInfo[i].region, shortestPath(agentsInfo[i].position, target)));
-            agentsInfo[i].position = target;
-        }
-    } //end for
-    while (!agentInfoPathIsEmpty(agentsInfoStore)) {
-        targetListArray.push(new copyTargetList(targetList));
-        for (var j = 0; j < agentsInfoStore.length; j++) {
-            if (agentsInfoStore[j].path.length > 0) {
-                var currentNode = agentsInfoStore[j].path.shift();
-                visitedPath[j].path.push(currentNode);
-                targetList = deleteNodeFromTargetList(currentNode, targetList);
-            } else {
-                var tempTarget = chooseTarget(agentsInfo[j], targetList);
-                if (tempTarget) { //find a target
-                    agentsInfoStore[j].path = shortestPath(agentsInfo[j].position, tempTarget);
-                    agentsInfo[j].position = tempTarget;
-                } else { //target is null
-                    agentsInfoStore[j].path = [];
+    while (targetList.length > 0) {
+        for (var i = 0; i < agentsInfo.length; i++) {
+            var target = chooseTarget(agentsInfo[i], targetList);
+            if (target) {
+                agentsInfoStore.push(AgentPathInfo(agentsInfo[i].id, agentsInfo[i].region, shortestPath(agentsInfo[i].position, target)));
+                agentsInfo[i].position = target;
+            }
+        }//end for
+    }//end while
+    processAgentsMoveInfo(agentsInfoStore);
+    return agentsInfoStore;
+}
+//process agentsInfoStore, make the path contionous
+function processAgentsMoveInfo(agentsInfoStore) {
+    //get rid of the initial position
+    for (var i = 0; i < agentsInfoStore.length; i++) {
+        agentsInfoStore[i].path.shift();
+    }
+    //add all the path togther
+    for (var j = 0; j < agentsInfoStore.length-1; j++) {
+        for (var k = j+1; k < agentsInfoStore.length; k++) {
+            if (agentsInfoStore[k].id === agentsInfoStore[j].id) {
+                while (agentsInfoStore[k].path.length>0) {
+                    agentsInfoStore[j].path.push(agentsInfoStore[k].path.shift());
                 }
             }
         }
     }
-    // console.log(JSON.stringify(visitedPath));
-    // console.log((targetListArray));
-    return visitedPath;
+    //get rid of the object with enmpt path
+    for (var m = agentsInfoStore.length-1; m > 0; m--) {
+        if (agentsInfoStore[m].path.length === 0) {
+            agentsInfoStore.pop();
+        }
+    }
+
+    var env = environment;
+    var agentInfo = getAgentsInfo(env);
+    for(var n=0;n<agentInfo.length; n++){
+	 if (agentsInfoStore[n].id === agentInfo[n].id) {
+            var position = [];
+            position.push(agentInfo[n].position.x - 1);
+            position.push(agentInfo[n].position.y - 1);
+            agentsInfoStore[n].path.unshift(position); 
+        }
+    }
+}
+//write the run information to file 
+//including; region id, region coordinates, target list for this region, agents' paths
+function writeRunInfoToFile(agentsInfoStore) {
+    var runStatistics = [];
+    var envRegions = environment.regions;
+    var numOfOpenSpaces = 0;
+    for (var i = 0; i < envRegions.length; i++) {
+        var agentsInTheRegion = [];
+        //the saved agents' position is based on (0,0), not Kasi(1,1)
+        for (var j = 0; j < agentsInfoStore.length; j++) {
+            if (agentsInfoStore[j].region === envRegions[i].id) {
+                agentsInTheRegion.push(agentsInfoStore[j]);
+            }
+        }
+        runStatistics.push(RegionInfoToSave(envRegions[i].id, envRegions[i].openSpaces, envRegions[i].openSpaces, agentsInTheRegion));
+        numOfOpenSpaces = numOfOpenSpaces + envRegions[i].openSpaces.length;
+    }
+    var steps = 0;
+    for (var j = 0; j < agentsInfoStore.length; j++) {
+        steps = steps + agentsInfoStore[j].path.length + 1;
+    }
+
+    var fileName = environment.size.x + 'x' + environment.size.y + '-#R' + envRegions.length + '-#A' + environment.agents.length + '-#OS' + numOfOpenSpaces + '#DATE'+Date.now();
+    var content = JSON.stringify(runStatistics);
 }
 
+function RegionInfoToSave(id, coordinates, targetList, agents) {
+    var regionInfoToSave = {};
+    regionInfoToSave.id = id;
+    regionInfoToSave.coordinates = coordinates;
+    regionInfoToSave.targetList = targetList;
+    regionInfoToSave.agents = agents;
+    return regionInfoToSave;
+};
 
 function AgentPathInfo(id, region, path) {
     var agent = {};
@@ -64,6 +110,7 @@ function chooseTarget(agent, targetList) {
     for (var i = 0; i < targetList.length; i++) {
         if (targetList[i].regionId === agent.region) {
             target = targetList[i].position;
+            targetList.splice(i, 1);
             break;
         }
     }
@@ -76,7 +123,7 @@ function shortestPath(startPosi, endPosi) {
         allowDiagonal: false
     });
     //var path = finder.findPath(1, 2, 4, 2, grid);
-    var path = finder.findPath(startPosi.x - 1, startPosi.y - 1, endPosi.x - 1, endPosi.y - 1, grid);
+    var path = finder.findPath(startPosi.x-1, startPosi.y-1, endPosi.x-1, endPosi.y-1, grid);
     return path;
 }
 
@@ -130,7 +177,7 @@ function getTargetList(environment) {
         for (var n = 0; n < environment.regions[m].openSpaces.length; n++) {
             var posi = environment.regions[m].openSpaces[n];
             var posiStr = '[' + posi.x + ',' + posi.y + ']';
-            if (!agentsPosition.includes(posiStr)) { //!agentsPosition.includes(posi)
+            if (!agentsPosition.includes(posiStr)) {//!agentsPosition.includes(posi)
                 targetList.push(Target(environment.regions[m].id, posi));
             }
         }
@@ -150,7 +197,6 @@ function AgentInfo(id, position, region) {
     this.position = position;
     this.region = region;
 }
-
 function copyAgentsInfo(agentsInfo) {
     var copyAgentsInfoArray = [];
     for (var i = 0; i < agentsInfo.length; i++) {
@@ -159,115 +205,17 @@ function copyAgentsInfo(agentsInfo) {
     return copyAgentsInfoArray;
 }
 
-/**
- **********************Add for changed environment*******************
- */
 
-//algorithm constrain-3
-function visitedPathConstrator(agentId, agentRegion, path) {
-    this.agentId = agentId;
-    this.agentRegion = agentRegion;
-    this.path = path;
-}
-
-function copyTargetList(targetList) {
-    var copy = [];
-    for (var i = 0; i < targetList.length; i++) {
-        copy.push(Target(targetList[i].regionId, targetList[i].position));
-    }
-    return copy;
-}
-
-function chooseTargetConstrain3(agent, targetList) {
-    var target = null,
-        pathLength = 0;
-    //find the farest targrt
-    for (var j = 0; j < targetList.length; j++) {
-        if (targetList[j].regionId === agent.region) {
-            var distance = shortestPath(agent.position, targetList[j].position).length;
-            if (pathLength < distance) {
-                target = targetList[j].position;
-                pathLength = distance;
-            }
-        }
-    }
-    return target;
-}
-
-function constrain3GetPath(agentsInfo, targetList) {
-    var agentsInfoStore = [];
-    var visitedPath = [];
-    var targetListArray = [];
-    for (var i = 0; i < agentsInfo.length; i++) {
-        var target = chooseTargetConstrain3(agentsInfo[i], targetList);
-        var array = [];
-        visitedPath.push(new visitedPathConstrator(agentsInfo[i].id, agentsInfo[i].region, array));
-        if (target) {
-            agentsInfoStore.push(AgentPathInfo(agentsInfo[i].id, agentsInfo[i].region, shortestPath(agentsInfo[i].position, target)));
-            agentsInfo[i].position = target;
-        }
-    } //end for
-    while (!agentInfoPathIsEmpty(agentsInfoStore)) {
-        targetListArray.push(new copyTargetList(targetList));
-        for (var j = 0; j < agentsInfoStore.length; j++) {
-            if (agentsInfoStore[j].path.length > 0) {
-                var currentNode = agentsInfoStore[j].path.shift();
-                visitedPath[j].path.push(currentNode);
-                targetList = deleteNodeFromTargetList(currentNode, targetList);
-            } else {
-                var tempTarget = chooseTargetConstrain3(agentsInfo[j], targetList);
-                if (tempTarget) { //find a target
-                    agentsInfoStore[j].path = shortestPath(agentsInfo[j].position, tempTarget);
-                    agentsInfo[j].position = tempTarget;
-                } else { //target is null
-                    agentsInfoStore[j].path = [];
-                }
-            }
-        }
-    }
-    //console.log(JSON.stringify(visitedPath));
-    //console.log((targetListArray));
-    return visitedPath;
-}
-
-function deleteNodeFromTargetList(node, targetList) {
-    for (var i = 0; i < targetList.length; i++) {
-        if (targetList[i].position.x - 0 === node[0] + 1 && targetList[i].position.y - 0 === node[1] + 1) {
-            targetList.splice(i, 1);
-        }
-    }
-    return targetList;
-}
-
-function agentInfoPathIsEmpty(agentsInfoStore) {
-    for (var i = 0; i < agentsInfoStore.length; i++) {
-        if (agentsInfoStore[i].path.length !== 0) {
-            return false;
-        }
-    }
-    return true;
-}
-
-
-function getAgentPath(env) {
-    environment = env;
+function getAgentPath(env){
+    environment=env;
     readEnvironment(env);
-    var targetList = getTargetList(env);
+   var targetList =  getTargetList(env);
     var agentsInfo = getAgentsInfo(env);
     var copyAgentInfo = copyAgentsInfo(agentsInfo);
-    var agentsInfoStore = chooseTargetsAndGetPaths(copyAgentInfo, targetList); //return to client
-
+    var agentsInfoStore = chooseTargetsAndGetPaths(copyAgentInfo, targetList);//return to client
+    writeRunInfoToFile(agentsInfoStore);
     return agentsInfoStore;
 }
-
-module.exports.getAgentPath = getAgentPath;
-
-function constrain3(env) {
-    var agentsInfo1 = getAgentsInfo(env);
-    var targetList1 = getTargetList(env);
-    var agentsInfoConstrain3 = constrain3GetPath(agentsInfo1, targetList1);
-
-}
-module.exports.constrain3 = constrain3;
+module.exports.getAgentPath=getAgentPath;
 
 //Don't change the code above

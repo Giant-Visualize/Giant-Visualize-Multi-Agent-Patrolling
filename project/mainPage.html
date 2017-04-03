@@ -61,6 +61,7 @@
     	  <div class="form-group">
     		  <label for="sel1">Select Algorithms:</label>
             <select class="form-control" id="algorithmsType" onchange="setAlgorithmsType()">
+              <option>---------</option>
               <option>Free form</option>
               <option>constrained-3</option>
               <option>constrained-4</option>
@@ -69,14 +70,8 @@
 	    </form>
       </div>
 
-      <div class="form-group">
-    		<button type="button" id = "returnButton" class="btn btn-primary" onclick="returnToBlock()" style="display:none"> Return </button>
-  		</div>
-      </form>
-      </div>
-
       <!--upload file-->
-      <div id = "regionMenu">
+      <div id = "regionMenu" style="display:none">
       <form class="form-inline well well-sm">
     	  <!--Please name the id='fileUpload' onchange='readFile()'-->
         <input type="file" name="fileUpload" value="fileUpload" id="fileUpload" onchange="readFile()">
@@ -86,13 +81,17 @@
         <div class="form-group">
     		<button type="button" id = "serachButton" class="btn btn-primary" onclick="jumpToHistoryPage()"> History </button>
   		 </div>
+
+       <div class="form-group">
+    		<button type="button" class="btn btn-primary" onclick="showSelectPage()"> Back To Select Algorithms</button>
+  		 </div>
        
       </form>
       </div>
 
       
 
-      <form class="form-inline well well-sm" id = "runMenu">
+      <form class="form-inline well well-sm" id = "runMenu" style="display:none">
       <div class="form-group">
         <input class="form-control" id = "steps" placeholder=" Steps " >
         <button type="button" id = "runForOnce" class="btn btn-primary" onclick="runOnce()"> Run One Step </button>
@@ -100,6 +99,12 @@
         <button type="button" id= "saveRun"class="btn btn-primary" onclick="saveRunInfo(getEnvironment(),getAgentPath(),3)"> Save Run</button>
       </div>
       </form>
+
+        <div style = "margin-left: 80px;">
+    		  <button type="button" class="btn btn-primary" id = "returnButton" onclick="returnToBlock()" style="display:none"> Return </button>
+        </div>
+
+
       <div id="holderOfBlock"></div>
       <div id="target">
             <canvas id="myCanvas" width="1280px" height="1280px" style="visibility:hidden;"> </canvas>  
