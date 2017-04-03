@@ -1,7 +1,7 @@
 
 var times=85;
-var leftGap=450;
-var topGap=100;
+var leftGap=250;
+var topGap=50;
 var radius=20;
 var min={};
 
@@ -29,18 +29,19 @@ function graph(Environment,regionID,agentPath,totalSteps){
         }
     });
 
-    var agent=[]; // get all agents in particular region
-    environment.agents.forEach((a)=>{
-        if(a.region==regionID){
-            agent.push(a);
-         
-        }
-    });
 
-    var currentAgentPath=[]; //get agent paths in particular region
+    // var agent=[]; // get all agents in particular region
+    // environment.agents.forEach((a)=>{
+    //     if(a.region==regionID){
+    //         agent.push(a);
+         
+    //     }
+    // });
+
+    var currentAgent=[]; // get all agents in particular region
     agentPath.forEach((a)=>{
         if(a.region==regionID){
-            currentAgentPath.push(a);
+            currentAgent.push(a);
         }
     });
       
@@ -55,7 +56,7 @@ function graph(Environment,regionID,agentPath,totalSteps){
 
       region.openSpaces.forEach((node)=>{
             if(Math.abs(leftGap+times*(node.x-min.x+1)-x)<=radius&&Math.abs(topGap+times*(node.y-min.y+1)-y)<=radius){
-                currentAgentPath.forEach((a) => {    //agent visist this open space
+                currentAgent.forEach((a) => {    //agent visist this open space
                     var step=totalSteps;
                     if(step>a.path.length-1)  step=a.path.length-1; //indentify Nst step
 
@@ -72,7 +73,7 @@ function graph(Environment,regionID,agentPath,totalSteps){
                 var step=totalSteps;
                 if(step>a.path.length-1)  step=a.path.length-1; //indentify Nst step
 
-                agentInfo+="Id: "+a.id+"\n"+"Coordinate: "+"("+a.path[step][0]+","+a.path[step][1]+")"+"\n";
+                agentInfo+="Id: "+a.id+"\n"+"Coordinate: "+"("+(a.path[step][0]+1)+","+(a.path[step][1]+1)+")"+"\n";
                 agentInfo+="\n";
                 swal("",agentInfo, "success")
  
@@ -88,8 +89,8 @@ function graph(Environment,regionID,agentPath,totalSteps){
             min.x=region.openSpaces[0].x;
             min.y=region.openSpaces[0].y;
             region.openSpaces.forEach((node) => {   //find minX and minY
-                if(min.x>node.x) min.x=node.x;
-                if(min.y>node.y) min.y=node.y;
+                if(min.x-node.x>0) min.x=node.x;
+                if(min.y-node.y>0) min.y=node.y;
              });
             region.openSpaces.forEach(drawNode); //draw circle
 
@@ -112,6 +113,40 @@ function graph(Environment,regionID,agentPath,totalSteps){
             });
 
             region.openSpaces.forEach(drawText); // draw coordinate
+    /* ********************************************** */ //show target list
+            var max=0;
+            max=region.openSpaces[0].x;
+            for(var i=0;i<region.openSpaces.length;i++){   
+                if(max-region.openSpaces[i].x<0){   
+                    max=region.openSpaces[i].x;
+                }
+            }
+            
+            var i=2.5;  // show taget list
+            var j=1;
+            ctx.fillStyle = 'black';
+            ctx.font="18px Times New Roman";
+            ctx.fillText("Target list",leftGap+times*(max-min.x+i),topGap+times*(j));
+            j+=0.5;
+            currentAgent.forEach((p)=>{
+                console.log(leftGap+times*(max-min.x+i));
+                ctx.fillText("("+(p.path[1][0]+1)+","+(p.path[1][1]+1)+")",(leftGap+times*(max-min.x+i)),topGap+times*(j));
+                i+=0.6;
+                
+            });
+            
+
+            i=2.5; //show current target
+            j=2;
+            ctx.fillText("Agent",leftGap+times*(max-min.x+2.5),topGap+times*(j));
+            ctx.fillText("Current target",leftGap+times*(max-min.x+2.5)+150,topGap+times*(j));
+
+            currentAgent.forEach((p)=>{
+                j+=0.5;
+                ctx.fillText("Agent"+p.id,leftGap+times*(max-min.x+2.5),topGap+times*(j));
+                ctx.fillText("("+(p.path[1][0]+1)+","+(p.path[1][1]+1)+")",leftGap+times*(max-min.x+2.5)+150,topGap+times*(j));
+            });
+
   }
 
   function drawNode(d) {
@@ -119,7 +154,7 @@ function graph(Environment,regionID,agentPath,totalSteps){
       ctx.strokeStyle = '#66CCCC';
       ctx.arc(leftGap+times*(d.x-min.x+1), topGap+times*(d.y-min.y+1), radius,0,  2 * Math.PI);
    
-        currentAgentPath.forEach((a) => {    //agent visist this open space
+        currentAgent.forEach((a) => {    //agent visist this open space
             var step=totalSteps;
             if(step>a.path.length-1)  step=a.path.length-1; //indentify Nst step
 
@@ -143,7 +178,7 @@ function graph(Environment,regionID,agentPath,totalSteps){
       ctx.font="15px Arial";
 
       var count=0;
-      currentAgentPath.forEach((a) => {    //agent visist this open space
+      currentAgent.forEach((a) => {    //agent visist this open space
             var step=totalSteps;
             if(step>a.path.length-1)  step=a.path.length-1; //indentify Nst step
 
