@@ -26,8 +26,8 @@ function chooseTargetsAndGetPaths(agentsInfo, targetList) {
             agentsInfo[i].position = target;
         }
     } //end for
-    while (!agentInfoPathIsEmpty(agentsInfoStore)) {
-        targetListArray.push(new copyTargetList(targetList));
+    while (targetList.length > 0) {
+        targetListArray.push(copyTargetList(targetList));
         for (var j = 0; j < agentsInfoStore.length; j++) {
             if (agentsInfoStore[j].path.length > 0) {
                 var currentNode = agentsInfoStore[j].path.shift();
@@ -47,7 +47,7 @@ function chooseTargetsAndGetPaths(agentsInfo, targetList) {
     // console.log(JSON.stringify(visitedPath));
     // console.log((targetListArray));
 
-    var returnValue=[];
+    var returnValue = [];
     returnValue.push(visitedPath);
     returnValue.push(targetListArray);
     return returnValue;
@@ -80,7 +80,7 @@ function shortestPath(startPosi, endPosi) {
         allowDiagonal: false
     });
     //var path = finder.findPath(1, 2, 4, 2, grid);
-    var path = finder.findPath(startPosi.x-1, startPosi.y-1, endPosi.x-1, endPosi.y-1, grid);
+    var path = finder.findPath(startPosi.x - 1, startPosi.y - 1, endPosi.x - 1, endPosi.y - 1, grid);
     return path;
 }
 
@@ -212,7 +212,7 @@ function constrain3GetPath(agentsInfo, targetList) {
         }
     } //end for
     while (!agentInfoPathIsEmpty(agentsInfoStore)) {
-        targetListArray.push(new copyTargetList(targetList));
+        targetListArray.push(copyTargetList(targetList));
         for (var j = 0; j < agentsInfoStore.length; j++) {
             if (agentsInfoStore[j].path.length > 0) {
                 var currentNode = agentsInfoStore[j].path.shift();
@@ -231,7 +231,7 @@ function constrain3GetPath(agentsInfo, targetList) {
     }
     // console.log(JSON.stringify(visitedPath));
     // console.log((targetListArray));
-    var returnValue=[];
+    var returnValue = [];
     returnValue.push(visitedPath);
     returnValue.push(targetListArray);
     return returnValue;
