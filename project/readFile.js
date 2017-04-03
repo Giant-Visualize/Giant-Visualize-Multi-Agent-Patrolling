@@ -106,7 +106,8 @@ function getSettings() {
     $.ajax({
         url: "/file",
         method: "GET",
-        data: { environment: environment},
+        data: { environment: environment,
+                algo : getAlgorithmsType()},
         success:showAgentsPath,
         error: function (data) {
             alert("error");

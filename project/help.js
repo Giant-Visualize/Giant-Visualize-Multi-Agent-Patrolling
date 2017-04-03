@@ -117,6 +117,10 @@ function getAlgorithmsType(){
     return algoType;
 }
 
+function getTotalSteps(){
+    return currentStep;
+}
+
 function showAgentsPathForClick(result){
     paper = Raphael("holderOfBlock",1280,680);
 
