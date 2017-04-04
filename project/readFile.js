@@ -191,18 +191,36 @@ function getCurrentTarget(){
 function showAgentsPath(allAgentsPaths) {
     agentPath=allAgentsPaths[0];
     targetList=allAgentsPaths[1];
+
+    console.log(agentPath);
+    console.log(targetList);
+
     agentPath.forEach((ap)=>{
-        for(var i=0;i<ap.path.length-1;i++){
-            if(ap.path[i][0]==ap.path[i+1][0]&&ap.path[i][1]==ap.path[i+1][1]){
-                currentTarget.push({id:ap.id,index:i,x:ap.path[i][0],y:ap.path[i][1]});
-                ap.path.splice(i+1,1);
-                i--;
+        for(var i=0;i<ap.path.length;i++){
+            for(j=0;j<ap.targets.length;j++){
+                if(ap.path[i][0]==ap.targets[j][0]&&ap.path[i][1]==ap.targets[j][1]){
+                   currentTarget.push({id:ap.id,index:i,x:ap.path[i][0],y:ap.path[i][1]}); 
+                }
             }
-            if(i==ap.path.length-2){
-                currentTarget.push({id:ap.id,index:i+1,x:ap.path[i+1][0],y:ap.path[i+1][1]});
+            if(i==ap.path.length-1){
+               currentTarget.push({id:ap.id,index:i,x:ap.path[i][0],y:ap.path[i][1]});  
             }
         }
     });
+
+
+    // agentPath.forEach((ap)=>{
+    //     for(var i=0;i<ap.path.length-1;i++){
+    //         if(ap.path[i][0]==ap.path[i+1][0]&&ap.path[i][1]==ap.path[i+1][1]){
+    //             currentTarget.push({id:ap.id,index:i,x:ap.path[i][0],y:ap.path[i][1]});
+    //             ap.path.splice(i+1,1);
+    //             i--;
+    //         }
+    //         if(i==ap.path.length-2){
+    //             currentTarget.push({id:ap.id,index:i+1,x:ap.path[i+1][0],y:ap.path[i+1][1]});
+    //         }
+    //     }
+    // });
 
     paper = Raphael("holderOfBlock", 1280, 680);
     drawEnvironment(getEnvironment(),agentPath);

@@ -78,9 +78,7 @@
         <!--Please write onclick='getSettings()'-->
         <button type="button" class = "btn btn-primary" onclick="getSettings()">Submit</button>
 
-        <div class="form-group">
-    		<button type="button" id = "serachButton" class="btn btn-primary" onclick="jumpToHistoryPage()"> History </button>
-  		 </div>
+
 
        <div class="form-group">
     		<button type="button" class="btn btn-primary" onclick="showSelectPage()"> Back To Select Algorithms</button>
@@ -89,20 +87,22 @@
       </form>
       </div>
 
-      
+      <form class="form-inline well well-sm" id = "saveMenu" style="display:none">
+      <div class="form-group">
+        <button type="button" id= "saveRun"class="btn btn-primary" onclick="saveRunInfo(getEnvironment(),getAgentPath(),getTotalSteps())"> Save Run</button>
+        <button type="button" id = "serachButton" class="btn btn-primary" onclick="jumpToHistoryPage()"> History </button>
+      </div>
+      </form>
 
       <form class="form-inline well well-sm" id = "runMenu" style="display:none">
       <div class="form-group">
         <input class="form-control" id = "steps" placeholder=" Steps " >
         <button type="button" id = "runForOnce" class="btn btn-primary" onclick="runOnce()"> Run One Step </button>
   		  <button type="button" id = "runForMore" class="btn btn-primary" onclick="run()"> Run </button>
-        <button type="button" id= "saveRun"class="btn btn-primary" onclick="saveRunInfo(getEnvironment(),getAgentPath(),getTotalSteps())"> Save Run</button>
+        <button type="button" class="btn btn-primary" id = "returnButton" onclick="returnToBlock()" style="display:none"> Return </button>
       </div>
       </form>
 
-        <div style = "margin-left: 80px;">
-    		  <button type="button" class="btn btn-primary" id = "returnButton" onclick="returnToBlock()" style="display:none"> Return </button>
-        </div>
 
 
       <div id="holderOfBlock"></div>

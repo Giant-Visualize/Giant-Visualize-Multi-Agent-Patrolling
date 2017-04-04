@@ -61,7 +61,9 @@ function loadInfo(runInfo) {
     $.each(runInfo, function(i, item) {
         $('.collapsible').append(
             "<li>"+
-                "<div class='collapsible-header'>"+formatDate(item.date)+"<br>"+item.id+"</div>"+
+                "<div class='collapsible-header'>"+"<span style='font-weight: bold;font-size:16px;'>"+item.id+"</span>"+
+                "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+formatDate(item.date)+"<br>"
+                +"<span style='color:grey;font-size:13px;'>"+item.description+"</span>"+"</div>"+
                 "<div class='collapsible-body'>"+"<span>"+diplay(item)+"</span>"+"</div>"+
             "</li>"
         )
@@ -89,7 +91,7 @@ function diplay(oneRunInfo){   //set diplay content and format
                 result+="<br>"+"&nbsp&nbsp&nbsp&nbsp&nbsp";
             }
         });
-         result+="Step:&nbsp"+oneRunInfo.step+"<br>";
+        result+="Step:&nbsp"+oneRunInfo.step+"<br>";
         result+="<br>";
        
 
@@ -103,42 +105,55 @@ function saveRunInfo(Environment, AgentPath,step) {
     // var timestamp=Math.round(date.getTime());
     // var d=new Date(timestamp);
     // var s=(d.getMonth()+1)+'-' + date.getDate() + '-' + date.getFullYear();
-    
+    swal({
+        title: "Description!",
+        text: "Write something interesting:",
+        type: "input",
+        showCancelButton: true,
+        closeOnConfirm: false,
+        animation: "slide-from-top",
+        inputPlaceholder: "Write something"
+    },
+    function(inputValue){
+        if (inputValue === false) return false;
 
-    var envi = jQuery.extend(true, {}, Environment);
-    var agp=jQuery.extend(true, [], AgentPath);
+        swal("Nice!", "You wrote: " + inputValue, "success");
+       
+        var envi = jQuery.extend(true, {}, Environment);
+        var agp=jQuery.extend(true, [], AgentPath);
 
-    var date=formatDate(new Date()); //get YY-MM-DD
+        var date=formatDate(new Date()); //get YY-MM-DD
 
-    var size=envi.size.x+"X"+envi.size.y;
+        var size=envi.size.x+"X"+envi.size.y;
 
-    var coordinate=JSON.stringify(envi.regions);
+        var coordinate=JSON.stringify(envi.regions);
 
-    var targetlist="";
+        var targetlist="";
 
-    for(var i=0;i<agp.length;i++){
-        for(var j=0;j<agp[i].path.length;j++){
-            if(j>=step){
-                agp[i].path.splice(j, 1);
-                
-                j--;
+        for(var i=0;i<agp.length;i++){
+            for(var j=0;j<agp[i].path.length;j++){
+                if(j>=step){
+                    agp[i].path.splice(j, 1);
+                    j--;
+                }
             }
         }
-    }
 
-     var agentpath=JSON.stringify(agp);
-    $.ajax({
-        url: "/saveRun",
-        method: "POST",
-        data: {
-            date:date,
-            size:size,
-            coordinate:coordinate,
-            targetlist: targetlist,
-            agentpath: agentpath,
-            step:step
-        },
+        var agentpath=JSON.stringify(agp);
+        $.ajax({
+            url: "/saveRun",
+            method: "POST",
+            data: {
+                date:date,
+                size:size,
+                coordinate:coordinate,
+                targetlist: targetlist,
+                agentpath: agentpath,
+                step:step,
+                description:inputValue
+            },
 
+        });
     });
 }
 

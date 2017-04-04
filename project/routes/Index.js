@@ -41,6 +41,7 @@ app.post('/saveRun', function (req, res, next) {
   var targetlist=req.body.targetlist;  
   var agentpath=req.body.agentpath; 
   var step=req.body.step; 
+  var description=req.body.description;
 
   // console.log("--------------------");
   // console.log(date);
@@ -51,7 +52,7 @@ app.post('/saveRun', function (req, res, next) {
   // console.log(step);
   // console.log("--------------------");
 
-  search.saveRunInfo(req, res,date,size,coordinate,targetlist,agentpath,step);
+  search.saveRunInfo(req, res,date,size,coordinate,targetlist,agentpath,step,description);
 });
 
 // app.get('/test', (req, res) => {

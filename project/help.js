@@ -104,6 +104,7 @@ function showSelectPage(){
     $('#regionMenu').hide();
     $('#returnButton').hide();
     $('#runMenu').hide();
+    $('#saveMenu').hide();
 }
 
 function setAlgorithmsType(){
@@ -111,6 +112,7 @@ function setAlgorithmsType(){
     $('#guidMenu').hide();
     $('#regionMenu').show();
     $('#runMenu').show();
+    $('#saveMenu').show();
 }
 
 function getAlgorithmsType(){
