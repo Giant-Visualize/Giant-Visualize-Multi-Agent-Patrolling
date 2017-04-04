@@ -4,6 +4,7 @@
 var environment;
 var agentPath;
 var targetList;
+var currentTarget=[];
 var s = [];
 
 function readFile() {
@@ -180,12 +181,29 @@ function getAgentPath() {
 function getTargetList(){
     return targetList;
 }
+
+function getCurrentTarget(){
+    return currentTarget;
+}
+
+
 //allAgentsPaths below is the data you need to display
 function showAgentsPath(allAgentsPaths) {
     agentPath=allAgentsPaths[0];
     targetList=allAgentsPaths[1];
-    console.log(agentPath);
-    console.log(targetList);
+    agentPath.forEach((ap)=>{
+        for(var i=0;i<ap.path.length-1;i++){
+            if(ap.path[i][0]==ap.path[i+1][0]&&ap.path[i][1]==ap.path[i+1][1]){
+                currentTarget.push({id:ap.id,index:i,x:ap.path[i][0],y:ap.path[i][1]});
+                ap.path.splice(i+1,1);
+                i--;
+            }
+            if(i==ap.path.length-2){
+                currentTarget.push({id:ap.id,index:i+1,x:ap.path[i+1][0],y:ap.path[i+1][1]});
+            }
+        }
+    });
+
     paper = Raphael("holderOfBlock", 1280, 680);
     drawEnvironment(getEnvironment(),agentPath);
     showGuidelines(getEnvironment());

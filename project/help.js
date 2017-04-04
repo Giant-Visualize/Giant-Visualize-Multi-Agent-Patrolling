@@ -141,7 +141,7 @@ function runOnce() {
         drawPath(resultOfMove,currentStep);
         showGuidelines(rawEnvironment,resultOfMove);
     } else {
-         graph(getEnvironment(),currentRegion,getAgentPath(),currentStep);
+         graph(getEnvironment(),currentRegion,getAgentPath(),currentStep,getTargetList(),getCurrentTarget());
          drawPath(resultOfMove,currentStep);
     }
     
@@ -269,7 +269,7 @@ function showGuidelines(path){
         node.click(function(){
             paper.remove();
             currentRegion = this.data("id");
-            graph(getEnvironment(),currentRegion,getAgentPath(),currentStep);
+            graph(getEnvironment(),currentRegion,getAgentPath(),currentStep,getTargetList(),getCurrentTarget());
             switchGraph();
             $("#returnButton").show();
             stateOfView=true;

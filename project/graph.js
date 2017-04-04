@@ -14,7 +14,7 @@ function switchGraph(){
     }
 }
 
-function graph(Environment,regionID,agentPath,totalSteps){
+function graph(Environment,regionID,agentPath,totalSteps,targetList,currentTarget){
     var environment = jQuery.extend(true, {}, Environment);
 
     var c = document.getElementById("myCanvas");
@@ -44,6 +44,8 @@ function graph(Environment,regionID,agentPath,totalSteps){
             currentAgent.push(a);
         }
     });
+
+    
       
     draw();
     
@@ -121,31 +123,50 @@ function graph(Environment,regionID,agentPath,totalSteps){
                     max=region.openSpaces[i].x;
                 }
             }
-            
+
             var i=2.5;  // show taget list
             var j=1;
             ctx.fillStyle = 'black';
             ctx.font="18px Times New Roman";
             ctx.fillText("Target list",leftGap+times*(max-min.x+i),topGap+times*(j));
             j+=0.5;
-            currentAgent.forEach((p)=>{
-                ctx.fillText("("+(p.path[1][0]+1)+","+(p.path[1][1]+1)+")",(leftGap+times*(max-min.x+i)),topGap+times*(j));
-                i+=0.6;
-                
-            });
-            
 
+           targetList[totalSteps].forEach((t)=>{
+                if(t.regionId==regionID){
+                    ctx.fillText("("+t.position.x+","+t.position.y+")",(leftGap+times*(max-min.x+i)),topGap+times*(j));
+                    i+=0.6;
+                }
+           });
+           
             i=2.5; //show current target
             j=2;
             ctx.fillText("Agent",leftGap+times*(max-min.x+2.5),topGap+times*(j));
             ctx.fillText("Current target",leftGap+times*(max-min.x+2.5)+150,topGap+times*(j));
 
-            currentAgent.forEach((p)=>{
-                j+=0.5;
-                ctx.fillText("Agent"+p.id,leftGap+times*(max-min.x+2.5),topGap+times*(j));
-                ctx.fillText("("+(p.path[1][0]+1)+","+(p.path[1][1]+1)+")",leftGap+times*(max-min.x+2.5)+150,topGap+times*(j));
-            });
+            var m=0;
+            console.log(currentTarget);
+            currentAgent.forEach((ca)=>{
+                    m=0;
+                    while(m<currentTarget.length&&(ca.id!=(currentTarget[m].id)||currentTarget[m].index<=totalSteps)){
+                            m++;          
+                    }
+                    if(m<currentTarget.length){
+                        j+=0.5;
+                        ctx.fillText("Agent"+currentTarget[m].id,leftGap+times*(max-min.x+2.5),topGap+times*(j));
+                        ctx.fillText("("+(currentTarget[m].x+1)+","+(currentTarget[m].y+1)+")",leftGap+times*(max-min.x+2.5)+150,topGap+times*(j));
+                    }
+ 
 
+                    // if(ca.id==ct.id&&ct.index>totalSteps){
+                    //     j+=0.5;
+                    //     ctx.fillText("Agent"+ct.id,leftGap+times*(max-min.x+2.5),topGap+times*(j));
+                    //     ctx.fillText("("+(ct.x+1)+","+(ct.y+1)+")",leftGap+times*(max-min.x+2.5)+150,topGap+times*(j));
+                    //     console.log(111);
+                    //     break;
+                    // }
+            });
+            console.log("----------------");
+        /* ********************************************** */
   }
 
   function drawNode(d) {
