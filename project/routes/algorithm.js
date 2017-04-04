@@ -20,14 +20,14 @@ function chooseTargetsAndGetPaths(agentsInfo, targetList) {
     for (var i = 0; i < agentsInfo.length; i++) {
         var target = chooseTarget(agentsInfo[i], targetList);
         var array = [];
-        visitedPath.push(new visitedPathConstrator(agentsInfo[i].id, agentsInfo[i].region, array));
+        var targets = [];
+        visitedPath.push(new visitedPathConstrator(agentsInfo[i].id, agentsInfo[i].region, array, targets));
         if (target) {
             agentsInfoStore.push(AgentPathInfo(agentsInfo[i].id, agentsInfo[i].region, shortestPath(agentsInfo[i].position, target)));
             agentsInfo[i].position = target;
         }
     } //end for
     while (targetList.length > 0) {
-        targetListArray.push(copyTargetList(targetList));
         for (var j = 0; j < agentsInfoStore.length; j++) {
             if (agentsInfoStore[j].path.length > 0) {
                 var currentNode = agentsInfoStore[j].path.shift();
@@ -36,13 +36,20 @@ function chooseTargetsAndGetPaths(agentsInfo, targetList) {
             } else {
                 var tempTarget = chooseTarget(agentsInfo[j], targetList);
                 if (tempTarget) { //find a target
-                    agentsInfoStore[j].path = shortestPath(agentsInfo[j].position, tempTarget);
+                    var shortPath = shortestPath(agentsInfo[j].position, tempTarget);
+                    var currentTarget = shortPath.shift(); //dupulicate start point
+                    visitedPath[j].targets.push(currentTarget); //
+                    var newPathFirstNodeVisited = shortPath.shift(); //visit the first node
+                    agentsInfoStore[j].path = shortPath;
+                    visitedPath[j].path.push(newPathFirstNodeVisited); //put the node in the visited array
+                    targetList = deleteNodeFromTargetList(newPathFirstNodeVisited, targetList); //delete the first none start point node from target node
                     agentsInfo[j].position = tempTarget;
                 } else { //target is null
                     agentsInfoStore[j].path = [];
                 }
             }
         }
+        targetListArray.push(copyTargetList(targetList));
     }
     // console.log(JSON.stringify(visitedPath));
     // console.log((targetListArray));
@@ -168,10 +175,11 @@ function copyAgentsInfo(agentsInfo) {
  */
 
 //algorithm constrain-3
-function visitedPathConstrator(agentId, agentRegion, path) {
+function visitedPathConstrator(agentId, agentRegion, path, targets) {
     this.id = agentId;
     this.region = agentRegion;
     this.path = path;
+    this.targets = targets;
 }
 
 function copyTargetList(targetList) {
@@ -211,8 +219,8 @@ function constrain3GetPath(agentsInfo, targetList) {
             agentsInfo[i].position = target;
         }
     } //end for
-    while (!agentInfoPathIsEmpty(agentsInfoStore)) {
-        targetListArray.push(copyTargetList(targetList));
+    while (targetList.length > 0) {
+
         for (var j = 0; j < agentsInfoStore.length; j++) {
             if (agentsInfoStore[j].path.length > 0) {
                 var currentNode = agentsInfoStore[j].path.shift();
@@ -221,13 +229,20 @@ function constrain3GetPath(agentsInfo, targetList) {
             } else {
                 var tempTarget = chooseTargetConstrain3(agentsInfo[j], targetList);
                 if (tempTarget) { //find a target
-                    agentsInfoStore[j].path = shortestPath(agentsInfo[j].position, tempTarget);
+                    var shortPath = shortestPath(agentsInfo[j].position, tempTarget);
+                    var currentTarget = shortPath.shift(); //dupulicate start point
+                    visitedPath[j].targets.push(currentTarget); //
+                    var newPathFirstNodeVisited = shortPath.shift(); //visit the first node
+                    agentsInfoStore[j].path = shortPath;
+                    visitedPath[j].path.push(newPathFirstNodeVisited); //put the node in the visited array
+                    targetList = deleteNodeFromTargetList(newPathFirstNodeVisited, targetList); //delete the first none start point node from target node
                     agentsInfo[j].position = tempTarget;
                 } else { //target is null
                     agentsInfoStore[j].path = [];
                 }
             }
         }
+        targetListArray.push(copyTargetList(targetList));
     }
     // console.log(JSON.stringify(visitedPath));
     // console.log((targetListArray));
@@ -241,18 +256,10 @@ function deleteNodeFromTargetList(node, targetList) {
     for (var i = 0; i < targetList.length; i++) {
         if (targetList[i].position.x - 0 === node[0] + 1 && targetList[i].position.y - 0 === node[1] + 1) {
             targetList.splice(i, 1);
+            break;
         }
     }
     return targetList;
-}
-
-function agentInfoPathIsEmpty(agentsInfoStore) {
-    for (var i = 0; i < agentsInfoStore.length; i++) {
-        if (agentsInfoStore[i].path.length !== 0) {
-            return false;
-        }
-    }
-    return true;
 }
 
 
