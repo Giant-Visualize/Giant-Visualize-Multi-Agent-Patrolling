@@ -212,8 +212,8 @@ function constrain3GetPath(agentsInfo, targetList) {
     var targetListArray = [];
     for (var i = 0; i < agentsInfo.length; i++) {
         var target = chooseTargetConstrain3(agentsInfo[i], targetList);
-        var array = [];
-        visitedPath.push(new visitedPathConstrator(agentsInfo[i].id, agentsInfo[i].region, array));
+        var array = []; var targets = [];
+        visitedPath.push(new visitedPathConstrator(agentsInfo[i].id, agentsInfo[i].region, array, targets));
         if (target) {
             agentsInfoStore.push(AgentPathInfo(agentsInfo[i].id, agentsInfo[i].region, shortestPath(agentsInfo[i].position, target)));
             agentsInfo[i].position = target;
