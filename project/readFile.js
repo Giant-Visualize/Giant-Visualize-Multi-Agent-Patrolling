@@ -192,9 +192,6 @@ function showAgentsPath(allAgentsPaths) {
     agentPath=allAgentsPaths[0];
     targetList=allAgentsPaths[1];
 
-    console.log(agentPath);
-    console.log(targetList);
-
     agentPath.forEach((ap)=>{
         for(var i=0;i<ap.path.length;i++){
             for(j=0;j<ap.targets.length;j++){

@@ -36,6 +36,7 @@ app.get('/history', function (req, res, next) {
 
 app.post('/saveRun', function (req, res, next) {
   var date=req.body.date;
+  var time=req.body.time ;
   var size=req.body.size;
   var coordinate=req.body.coordinate;
   var targetlist=req.body.targetlist;  
@@ -45,14 +46,15 @@ app.post('/saveRun', function (req, res, next) {
 
   // console.log("--------------------");
   // console.log(date);
+  // console.log(time);
   // console.log(size);
   // console.log(coordinate);
   // console.log(targetlist);
   // console.log(agentpath);
   // console.log(step);
   // console.log("--------------------");
-
-  search.saveRunInfo(req, res,date,size,coordinate,targetlist,agentpath,step,description);
+  
+  search.saveRunInfo(req, res,date,time,size,coordinate,targetlist,agentpath,step,description);
 });
 
 // app.get('/test', (req, res) => {
