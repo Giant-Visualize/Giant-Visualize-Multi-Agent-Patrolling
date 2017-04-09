@@ -9,17 +9,13 @@ var s = [];
 
 function readFile() {
     var string;
-    // var file = document.getElementById("fileUpload").files[0];
     var file = $('#fileUpload').get(0).files[0];
     if (file) {
         var reader = new FileReader();
         reader.readAsText(file, "UTF-8");
         reader.onload = function(evt) {
             string = evt.target.result;
-            //alert(string);
             environment = processFile(string);
-            //read environment change it to matrix
-            // readEnvironment(environment);  // works fine
         }
         reader.onerror = function(evt) {
             alert("error reading file");
@@ -204,20 +200,6 @@ function showAgentsPath(allAgentsPaths) {
             }
         }
     });
-
-
-    // agentPath.forEach((ap)=>{
-    //     for(var i=0;i<ap.path.length-1;i++){
-    //         if(ap.path[i][0]==ap.path[i+1][0]&&ap.path[i][1]==ap.path[i+1][1]){
-    //             currentTarget.push({id:ap.id,index:i,x:ap.path[i][0],y:ap.path[i][1]});
-    //             ap.path.splice(i+1,1);
-    //             i--;
-    //         }
-    //         if(i==ap.path.length-2){
-    //             currentTarget.push({id:ap.id,index:i+1,x:ap.path[i+1][0],y:ap.path[i+1][1]});
-    //         }
-    //     }
-    // });
 
     paper = Raphael("holderOfBlock", 1280, 680);
     drawEnvironment(getEnvironment(),agentPath);

@@ -13,6 +13,66 @@ var environment;
 //set agent pisotion to the target
 //push the result to agentsInfoStore
 //agentsInfoStore: id, region, path
+
+function freeform(agentsInfo, targetList) {
+    var agentsInfoStore = [];
+    var visitedPath = [];
+    var targetListArray = [];
+
+    for (var i = 0; i < agentsInfo.length; i++) {
+        var target = freeFormChooseTarget(agentsInfo[i], targetList);
+        var patharray = [];
+	var targets = [];
+        visitedPath.push(new visitedPathConstrator(agentsInfo[i].id, agentsInfo[i].region, patharray, targets));
+        if (target) {
+            agentsInfoStore.push(AgentPathInfo(agentsInfo[i].id, agentsInfo[i].region, shortestPath(agentsInfo[i].position, target)));
+            agentsInfo[i].position = target;
+        }
+    }//end for
+   
+    while (targetList.length > 0) {
+        for (var j = 0; j < agentsInfoStore.length; j++) {
+            if (agentsInfoStore[j].path.length > 0) {
+                var currentNode = agentsInfoStore[j].path.shift();
+                visitedPath[j].path.push(currentNode);
+		targetList = deleteNodeFromTargetList(currentNode, targetList);
+            } else {
+		var tempTarget = freeFormChooseTarget(agentsInfo[j], targetList);
+                if (tempTarget) {//find a target
+                    var shortPath = shortestPath(agentsInfo[j].position, tempTarget);
+                    var currentTarget = shortPath.shift();//dupulicate start point
+                    visitedPath[j].targets.push(currentTarget);//
+                    var newPathFirstNodeVisited = shortPath.shift();//visit the first node
+                    agentsInfoStore[j].path = shortPath;
+                    visitedPath[j].path.push(newPathFirstNodeVisited);//put the node in the visited array
+		    targetList = deleteNodeFromTargetList(newPathFirstNodeVisited, targetList);
+                    agentsInfo[j].position = tempTarget;
+                } else {//target is null
+                    agentsInfoStore[j].path = [];
+                }
+            }
+        }
+        targetListArray.push(copyTargetList(targetList));
+    }
+    var returnValue = [];
+    returnValue.push(visitedPath);
+    targetListArray.shift();
+    returnValue.push(targetListArray);
+    return returnValue;
+}
+
+function freeFormChooseTarget(agent, targetList) {
+    var target = null;
+    for (var i = 0; i < targetList.length; i++) {
+        if (targetList[i].regionId === agent.region) {
+            target = targetList[i].position;
+            targetList.splice(i, 1);
+            break;
+        }
+    }
+    return target;
+}
+
 function chooseTargetsAndGetPaths(agentsInfo, targetList) {
     var agentsInfoStore = [];
     var visitedPath = [];
@@ -51,8 +111,6 @@ function chooseTargetsAndGetPaths(agentsInfo, targetList) {
         }
         targetListArray.push(copyTargetList(targetList));
     }
-    // console.log(JSON.stringify(visitedPath));
-    // console.log((targetListArray));
 
     var returnValue = [];
     returnValue.push(visitedPath);
@@ -87,7 +145,7 @@ function shortestPath(startPosi, endPosi) {
         allowDiagonal: false
     });
     //var path = finder.findPath(1, 2, 4, 2, grid);
-    var path = finder.findPath(startPosi.x - 1, startPosi.y - 1, endPosi.x - 1, endPosi.y - 1, grid);
+    var path = finder.findPath(startPosi.x-1, startPosi.y-1, endPosi.x-1, endPosi.y-1, grid);
     return path;
 }
 
@@ -220,7 +278,6 @@ function constrain3GetPath(agentsInfo, targetList) {
         }
     } //end for
     while (targetList.length > 0) {
-
         for (var j = 0; j < agentsInfoStore.length; j++) {
             if (agentsInfoStore[j].path.length > 0) {
                 var currentNode = agentsInfoStore[j].path.shift();
@@ -254,7 +311,7 @@ function constrain3GetPath(agentsInfo, targetList) {
 
 function deleteNodeFromTargetList(node, targetList) {
     for (var i = 0; i < targetList.length; i++) {
-        if (targetList[i].position.x - 0 === node[0] + 1 && targetList[i].position.y - 0 === node[1] + 1) {
+        if (targetList[i].position.x - 0 === node[0]+1 && targetList[i].position.y-0 === node[1]+1) {
             targetList.splice(i, 1);
             break;
         }
@@ -262,7 +319,7 @@ function deleteNodeFromTargetList(node, targetList) {
     return targetList;
 }
 
-
+//constrain 4
 function getAgentPath(env) {
     environment = env;
     readEnvironment(env);
@@ -270,13 +327,14 @@ function getAgentPath(env) {
     var agentsInfo = getAgentsInfo(env);
     var copyAgentInfo = copyAgentsInfo(agentsInfo);
     var agentsInfoStore = chooseTargetsAndGetPaths(copyAgentInfo, targetList); //return to client
-
     return agentsInfoStore;
 }
 
 module.exports.getAgentPath = getAgentPath;
 
 function constrain3(env) {
+    environment = env;
+    readEnvironment(env);
     var agentsInfo1 = getAgentsInfo(env);
     var targetList1 = getTargetList(env);
     return constrain3GetPath(agentsInfo1, targetList1);
@@ -284,4 +342,13 @@ function constrain3(env) {
 }
 module.exports.constrain3 = constrain3;
 
+function noConstrain(env){
+    environment = env;
+    readEnvironment(env);
+    var agentsInfo = getAgentsInfo(env);
+    var targetList = getTargetList(env);
+    return freeform(agentsInfo, targetList); //return to client
+ 
+}
+module.exports.noConstrain = noConstrain;
 //Don't change the code above

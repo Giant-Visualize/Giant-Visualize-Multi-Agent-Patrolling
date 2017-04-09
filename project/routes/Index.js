@@ -21,8 +21,10 @@ app.get('/file', function (req, res, next) {
     var agentsInfoStore=[];
     if(algorithmName=="constrained-3"){
         agentsInfoStore=algorithm.constrain3(environment);
+    }else if(algorithmName == "constrained-4"){
+	agentsInfoStore=algorithm.getAgentPath(environment);
     }else{
-        agentsInfoStore=algorithm.getAgentPath(environment);
+	agentsInfoStore = algorithm.noConstrain(environment);
     }
 
     res.status(200).send(agentsInfoStore);
