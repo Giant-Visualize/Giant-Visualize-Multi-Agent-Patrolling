@@ -159,7 +159,7 @@ function getSettings() {
     },
         success: showAgentsPath,
         error: function(data) {
-            alert("error");
+            alert(" Please refresh page and upload a correct file.");
         }
     });
 }
