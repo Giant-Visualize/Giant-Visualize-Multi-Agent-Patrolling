@@ -100,11 +100,7 @@ function confirm(){
 };
 
 function showSelectPage(){
-    $('#guidMenu').show();
-    $('#regionMenu').hide();
-    $('#returnButton').hide();
-    $('#runMenu').hide();
-    $('#saveMenu').hide();
+    window.location.reload();
 }
 
 function setAlgorithmsType(){
