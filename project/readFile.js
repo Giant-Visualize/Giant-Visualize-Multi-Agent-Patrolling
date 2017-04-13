@@ -6,6 +6,22 @@ var agentPath;
 var targetList;
 var currentTarget=[];
 var s = [];
+var fileErrorObj = {
+    error: {
+	 size: "Size of the environment is invalid",
+        invalidRegionCoordinate: "Region's coordinate is invalid",
+        invalidAgentCoordinate: "Agent's coordinate is invalid",
+        agentNotInRegion: "Agent not in the region",
+        regionHasAtLeastOneAgent: "One region has at least one agent",
+        agentMoreThanHalfOfRegion: "The number of agents are more than the half the number of open spaces",
+        dupilcatedRegionId: "Region id is not unique",
+        duplicateAgentId: "Agent id is not unique",
+        duplicateCoordinateInRegion: "Duplicate coordinate in the region",
+        regionCoordinateIsNotContinued: "The coordinates of the region are not continue",
+        agentMoreThanOneThird: "The number of agent is more than [n/3]"
+    }
+};
+
 
 function readFile() {
     var string;
@@ -74,39 +90,62 @@ function processFile(string) {
 }
 
 function verifyFile(env) {
-    var agents = env.agents;
-    var regions = env.regions;
+      return verifySize(env) && verifyRegionPosition(env)
+        && duplicatedRegionId(env) && duplicatedAgentId(env)
+        && duplicateCoordinateInRegion(env) && regionNotContinue(env)
+        && agentsNumberConstrain(env) && verifyAgent(env);
+}
+
+/************File validation*******************/
+function verifySize(env) {
     var size = env.size;
-    //region position is invalid, like the index is less or more than size
+    if (size.x > 16 || size.x < 8 || size.y > 16 || size.y < 8) {
+        alert(fileErrorObj.error.size);
+        return false;
+    }
+    return true;
+}
+
+function verifyRegionPosition(env) {
+    var regions = env.regions;
+    var agents = env.agents;
+    var size = env.size;
     for (var i = 0; i < regions.length; i++) {
         var currentRegion = regions[i];
         for (var m = 0; m < currentRegion.openSpaces.length; m++) {
             if (currentRegion.openSpaces[m].x - 0 < 1 || currentRegion.openSpaces[m].x - 0 > size.x - 0 || currentRegion.openSpaces[m].y - 0 < 1 || currentRegion.openSpaces[m].y - 0 > size.y - 0) {
-                alert('Invalid region');
+                alert(fileErrorObj.error.invalidRegionCoordinate);
                 return false;
             }
         }
     }
-    //agents information is correct or not
+    return true;
+}
+
+function verifyAgent(env) {
+    var agents = env.agents;
+    var regions = env.regions;
+    var size = env.size;    
+
     for (var j = 0; j < agents.length; j++) {
         var agentRegion = agents[j].region;
         //agent start position is invalid, like the index is less or more than size
         if (agents[j].position.x - 0 < 1 || agents[j].position.x - 0 > size.x - 0 || agents[j].position.y - 0 < 1 || agents[j].position.y - 0 > size.y - 0) {
-            alert('Invalid agent position');
+            alert(fileErrorObj.error.invalidAgentCoordinate);
             return false;
         }
 
         //agent start position is not in the region
-        for (var k = 0; k < regions.length; k++) { //find the region that the agent belongs to
+        for (var k = 0; k < regions.length; k++) {//find the region that the agent belongs to
             if (regions[k].id === agentRegion) {
                 var n = 0;
-                for (n = 0; n < regions[k].openSpaces.length; n++) { //check whether the agent is in that region
+                for (n = 0; n < regions[k].openSpaces.length; n++) {//check whether the agent is in that region
                     if ((regions[k].openSpaces[n].x - 0 === agents[j].position.x - 0) && regions[k].openSpaces[n].y - 0 === agents[j].position.y - 0) {
                         break;
                     }
                 }
                 if (n === regions[k].openSpaces.length) {
-                    alert("Agent position is not in the region");
+                    alert(fileErrorObj.error.agentNotInRegion);
                     return false;
                 }
             }
@@ -115,6 +154,121 @@ function verifyFile(env) {
     //one region has two same position
     return true;
 }
+
+function agentsNumberConstrain(env) {
+    var agents = env.agents;
+    var regions = env.regions;
+
+    for (var i= 0; i < regions.length;i++){
+        var regionId = regions[i].id;
+        var count = 0;
+        for (var j = 0; j < agents.length; j++) {
+            if (agents[j].region === regionId) {
+                count++;
+            }
+        }
+        if (count === 0) {
+            alert(fileErrorObj.error.regionHasAtLeastOneAgent);
+            return false;
+        }
+        if (count > regions[i].openSpaces.length / 2) {
+            alert(fileErrorObj.error.agentMoreThanHalfOfRegion);
+            return false;
+        }
+    }
+    return true;
+}
+
+function duplicatedAgentId(env) {
+    var agents = env.agents;
+    var ids = [];
+    for (var i = 0; i < agents.length; i++){
+        if (ids.includes(agents[i].id)) {
+            alert(fileErrorObj.error.duplicateAgentId);
+            return false;
+        } else {
+            ids.push(agents[i].id);
+        }
+    }
+    return true;
+}
+
+function duplicatedRegionId(env) {
+    var regions = env.regions;
+    var ids = [];
+    for (var i = 0; i < regions.length; i++) {
+        if (ids.includes(regions[i].id)) {
+            alert(fileErrorObj.error.dupilcatedRegionId);
+            return false;
+        } else {
+            ids.push(regions[i].id);
+        }
+    }
+    return true;
+}
+
+function duplicateCoordinateInRegion(env) {
+    var regions = env.regions;
+    for (var i = 0; i < regions.length; i++) {
+        var coordinatesInRegion = [];
+        for (var j = 0; j < regions[i].openSpaces.length; j++) {
+            if (coordinatesInRegion.includes(regions[i].openSpaces[j].x + " " + regions[i].openSpaces[j].y)) {
+                alert(fileErrorObj.error.duplicateCoordinateInRegion);
+                return false;
+            } else {
+                coordinatesInRegion.push(regions[i].openSpaces[j].x + " " + regions[i].openSpaces[j].y);
+            }    
+        }
+    }
+    return true;
+}
+
+function regionNotContinue(env) {
+    var regions = env.regions;
+
+    for (var i = 0; i < regions.length; i++) {
+        var openSpaces = [];
+        for (var j = 0; j < regions[i].openSpaces.length; j++) {
+            openSpaces.push(regions[i].openSpaces[j].x + " " + regions[i].openSpaces[j].y);
+        }
+        for (var k = 0; k < regions[i].openSpaces.length; k++) {
+            var left = regions[i].openSpaces[k].x - 1 + " " + regions[i].openSpaces[k].y;
+            var right = regions[i].openSpaces[k].x + 1 + " " + regions[i].openSpaces[k].y
+            var up = regions[i].openSpaces[k].x + " " + regions[i].openSpaces[k].y - 1;
+            var down = regions[i].openSpaces[k].x + " " + regions[i].openSpaces[k].y + 1;
+            if (!(openSpaces.includes(left) || openSpaces.includes(right) || openSpaces.includes(up)
+                || openSpaces.includes(down))) {
+                alert(fileErrorObj.error.regionCoordinateIsNotContinued);
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+/**************file validation for constrained-3*******************/
+function validationConstrained3(env) {
+    var agents = env.agents;
+    var regions = env.regions;
+
+    for (var i = 0; i < regions.length; i++) {
+        var regionId = regions[i].id;
+        var count = 0;
+        for (var j = 0; j < agents.length; j++) {
+            if (agents[j].region === regionId) {
+                count++;
+            }
+        }
+        if (count > regions[i].openSpaces.length / 3) {
+            alert(fileErrorObj.error.agentMoreThanOneThird);
+            return false;
+        }
+    }
+    return true;
+}
+/***************end fild validation for constrained-3**************/
+
+/************End File Validation***************/
 
 function Position(x, y) {
     var position = {};
