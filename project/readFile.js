@@ -232,12 +232,16 @@ function regionNotContinue(env) {
             openSpaces.push(regions[i].openSpaces[j].x + " " + regions[i].openSpaces[j].y);
         }
         for (var k = 0; k < regions[i].openSpaces.length; k++) {
-            var left = regions[i].openSpaces[k].x - 1 + " " + regions[i].openSpaces[k].y;
-            var right = regions[i].openSpaces[k].x + 1 + " " + regions[i].openSpaces[k].y
-            var up = regions[i].openSpaces[k].x + " " + regions[i].openSpaces[k].y - 1;
-            var down = regions[i].openSpaces[k].x + " " + regions[i].openSpaces[k].y + 1;
-            if (!(openSpaces.includes(left) || openSpaces.includes(right) || openSpaces.includes(up)
-                || openSpaces.includes(down))) {
+            var a = Number(regions[i].openSpaces[k].x);
+            var b = Number(regions[i].openSpaces[k].y);
+            var u = b - 1;//up
+            var r = a + 1;//right
+            var d = b + 1;//down
+            var l = a - 1;//left
+            if (!(openSpaces.includes(a + " " + u)
+                || openSpaces.includes(a + " " + d)
+                || openSpaces.includes(l + " " + b)
+                || openSpaces.includes(r + " " + b))) {
                 alert(fileErrorObj.error.regionCoordinateIsNotContinued);
                 return false;
             }
@@ -291,8 +295,6 @@ function validationConstrained4(env) {
             checkStartPosition(agents[j],regions[i])
         }
     }
-
-    
     return true;
 }
 
@@ -436,5 +438,4 @@ function showAgentsPath(allAgentsPaths) {
     paper = Raphael("holderOfBlock", 1280, 680);
     drawEnvironment(getEnvironment(),agentPath);
     showGuidelines(getEnvironment());
-    
 }
