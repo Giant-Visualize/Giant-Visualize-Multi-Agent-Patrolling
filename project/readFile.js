@@ -267,6 +267,84 @@ function validationConstrained3(env) {
     return true;
 }
 /***************end fild validation for constrained-3**************/
+/***************C4 file validation */
+function validationConstrained4(env) {
+    var agents = env.agents;
+    var regions = env.regions;
+
+    for (var i = 0; i < regions.length; i++) {
+        var regionId = regions[i].id;
+        var count = 0;
+        for (var j = 0; j < agents.length; j++) {
+            if (agents[j].region === regionId) {
+                count++;
+            }
+        }
+        if (count > regions[i].openSpaces.length / 4) {
+            alert("The number of agent in regin "+i+" is more than [n/4]");
+            return false;
+        }
+    }
+
+    for (var i = 0 ; i < regions.length; i++){
+        for (var j = 0 ; j < agents.length; j++){
+            checkStartPosition(agents[j],regions[i])
+        }
+    }
+
+    
+    return true;
+}
+
+function checkStartPosition (agent,region){
+    var count;
+    if(!checkRec(region)){
+    if (region.openSpaces.includes({x:agent.position.x-1,y:agent.position.y})){
+        count++;
+    }
+    if (region.openSpaces.includes({x:agent.position.x+1,y:agent.position.y})){
+        count++;
+    }
+    if (region.openSpaces.includes({x:agent.position.x,y:agent.position.y-1})){
+        count++;
+    }
+    if (region.openSpaces.includes({x:agent.position.x,y:agent.position.y+1})){
+        count++;
+    }
+    if (count > 1){
+        alert("Agent "+ agent.id+" start position error");
+    }
+    }
+    count = 0;
+}
+
+function checkRec(region){
+    var matchedSpace;
+    for(var i = 0; i< region.openSpaces.length; i++ ){
+        var count;
+        if (region.openSpaces.includes({x:agent.position.x-1,y:agent.position.y})){
+            count++;
+        }
+        if (region.openSpaces.includes({x:agent.position.x+1,y:agent.position.y})){
+            count++;
+        }
+        if (region.openSpaces.includes({x:agent.position.x,y:agent.position.y-1})){
+            count++;
+        }
+        if (region.openSpaces.includes({x:agent.position.x,y:agent.position.y+1})){
+            count++;
+        }
+        if (count > 1){
+            matchedSpace++;
+        }
+    }
+    if (matchedSpace == region.openSpaces.length){
+        return true;
+    } else {
+        return false;
+    }
+}
+/***************C4 end */
 
 /************End File Validation***************/
 
