@@ -33,7 +33,11 @@ app.get('/file', function (req, res, next) {
 app.get('/history', function (req, res, next) {
   var date=req.query.date ;
   var id=req.query.id;
-  search.getRunInfo(req, res,date,id);
+  var time=req.query.time;
+  var size=req.query.size;
+  var region=req.query.region;
+  var step=req.query.step;
+  search.getRunInfo(req, res,date,id,time,size,region,step);
 });
 
 app.post('/saveRun', function (req, res, next) {
@@ -45,6 +49,7 @@ app.post('/saveRun', function (req, res, next) {
   var agentpath=req.body.agentpath; 
   var step=req.body.step; 
   var description=req.body.description;
+  var regionNumber=req.body.regionNumber;
 
   // console.log("--------------------");
   // console.log(date);
@@ -56,7 +61,7 @@ app.post('/saveRun', function (req, res, next) {
   // console.log(step);
   // console.log("--------------------");
   
-  search.saveRunInfo(req, res,date,time,size,coordinate,targetlist,agentpath,step,description);
+  search.saveRunInfo(req, res,date,time,size,coordinate,targetlist,agentpath,step,description,regionNumber);
 });
 
 // app.get('/test', (req, res) => {

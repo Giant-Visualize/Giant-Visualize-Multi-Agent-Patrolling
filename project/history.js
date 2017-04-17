@@ -34,26 +34,32 @@ function formatDate(date) {
 
 function formatTime(date) {
     var d = new Date(date),
-        sec=''+d.getSeconds();
         min = '' + d.getMinutes(),
         hour = d.getHours();
 
-    if (sec<10) sec = '0' + sec;
     if (min<10) month = '0' + min;
     if (hour<10) hour = '0' + hour;
 
-    return [hour,min,sec].join(':');
+    return [hour,min].join(':');
 }
 
 function getRunInfo(date) {
 
    id=$('#inputId').val();
+   var time=$('#inputTime').val();
+   var size=$('#inputSize').val();
+   var region=$('#inputRegion').val();
+   var step=$('#inputStep').val();
       $.ajax({
         url: "/history",
         method: "GET",
         data: { 
             date: date,
-            id:id
+            id:id,
+            time:time,
+            size:size,
+            region:region,
+            step:step
         },
         success:loadInfo,
       });
@@ -171,20 +177,11 @@ function saveRunInfo(Environment, AgentPath,step,targetList) {
         var targetlist=JSON.stringify(targetList);
 
 
-        for(var i=0;i<agp.length;i++){
-            for(var j=0;j<agp[i].path.length;j++){
-                if(j>=step){
-                    agp[i].path.splice(j, 1);
-                    j--;
-                }
-            }
-        }
-
         var agentpath=JSON.stringify(agp);
 
-         console.log(targetlist.length);
-        console.log(coordinate.length);
-        console.log(agentpath.length);
+        var regionNumber=envi.length;
+        console.log(regionNumber);
+
         $.ajax({
             url: "/saveRun",
             method: "POST",
@@ -197,6 +194,7 @@ function saveRunInfo(Environment, AgentPath,step,targetList) {
                 agentpath: agentpath,
                 step:step,
                 description:inputValue,
+                regionNumber:regionNumber,
             },
 
         });
