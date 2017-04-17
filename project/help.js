@@ -130,6 +130,18 @@ function showAgentsPathForClick(result){
 
 function runOnce() {
      currentStep++;
+     var maxPath=0;
+     var ap=getAgentPath();
+     ap.forEach((a)=>{
+        if(maxPath<=a.path.length-1){
+            maxPath=a.path.length-1;
+        }
+     });
+
+     if(currentStep>=maxPath){//complete all pathes
+        $('#returnButton').show();
+     }
+
     if(!stateOfView){
         paper.remove();
         currentAgent = [];
