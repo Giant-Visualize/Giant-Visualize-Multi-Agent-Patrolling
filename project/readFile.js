@@ -92,7 +92,7 @@ function processFile(string) {
 function verifyFile(env) {
       return verifySize(env) && verifyRegionPosition(env)
         && duplicatedRegionId(env) && duplicatedAgentId(env)
-        && duplicateCoordinateInRegion(env)// && regionNotContinue(env)
+        && duplicateCoordinateInRegion(env) && regionNotContinue(env)
         && agentsNumberConstrain(env) && verifyAgent(env);
 }
 
