@@ -32,6 +32,13 @@ function readFile() {
         reader.onload = function(evt) {
             string = evt.target.result;
             environment = processFile(string);
+            var type = getAlgorithmsType();
+              verifyFile(environment);
+            if(type === "constrained-3"){
+                validationConstrained3(environment);
+            }else if(type === "constrained-4"){
+                validationConstrained4(environment);
+            }
         }
         reader.onerror = function(evt) {
             alert("error reading file");
@@ -83,9 +90,6 @@ function processFile(string) {
     environment.size = size;
     environment.regions = regions;
     environment.agents = agents;
-    if (!verifyFile(environment)) {
-        return null;
-    }
     return environment;
 }
 
@@ -232,16 +236,14 @@ function regionNotContinue(env) {
             openSpaces.push(regions[i].openSpaces[j].x + " " + regions[i].openSpaces[j].y);
         }
         for (var k = 0; k < regions[i].openSpaces.length; k++) {
-            var a = Number(regions[i].openSpaces[k].x);
-            var b = Number(regions[i].openSpaces[k].y);
-            var u = b - 1;//up
-            var r = a + 1;//right
-            var d = b + 1;//down
-            var l = a - 1;//left
-            if (!(openSpaces.includes(a + " " + u)
-                || openSpaces.includes(a + " " + d)
-                || openSpaces.includes(l + " " + b)
-                || openSpaces.includes(r + " " + b))) {
+            var x = Number(regions[i].openSpaces[k].x);
+            var y = Number(regions[i].openSpaces[k].y);
+            var left = x - 1 ;
+            var right = x + 1;
+            var up = y - 1;
+            var down = y + 1;
+            if (!(openSpaces.includes(left+" "+ y) || openSpaces.includes(right+ " "+ y) || openSpaces.includes(x+" "+up)
+                || openSpaces.includes(x+" "+down))) {
                 alert(fileErrorObj.error.regionCoordinateIsNotContinued);
                 return false;
             }
@@ -285,7 +287,7 @@ function validationConstrained4(env) {
             }
         }
         if (count > regions[i].openSpaces.length / 4) {
-            alert("The number of agent in regin "+i+" is more than [n/4]");
+            alert("The number of agent in regin "+(i+1)+" is more than [n/4]");
             return false;
         }
     }
@@ -295,45 +297,59 @@ function validationConstrained4(env) {
             checkStartPosition(agents[j],regions[i])
         }
     }
+
+    
     return true;
 }
 
+function checkIncludes(obj,region){
+    for(var i = 0 ; i < region.openSpaces.length;i++){
+        if((obj.x == region.openSpaces[i].x) && (obj.y == region.openSpaces[i].y)){
+            return true;
+        }
+    }
+    return false;
+}
+
 function checkStartPosition (agent,region){
-    var count;
+    var count = 0;
     if(!checkRec(region)){
-    if (region.openSpaces.includes({x:agent.position.x-1,y:agent.position.y})){
+    if (checkIncludes({x:agent.position.x-1,y:agent.position.y},region)){
         count++;
     }
-    if (region.openSpaces.includes({x:agent.position.x+1,y:agent.position.y})){
+    if (checkIncludes({x:agent.position.x+1,y:agent.position.y},region)){
         count++;
     }
-    if (region.openSpaces.includes({x:agent.position.x,y:agent.position.y-1})){
+    if (checkIncludes({x:agent.position.x,y:agent.position.y+1},region)){
         count++;
     }
-    if (region.openSpaces.includes({x:agent.position.x,y:agent.position.y+1})){
+    if (checkIncludes({x:agent.position.x,y:agent.position.y-1},region)){
         count++;
     }
+    console.log("count :" +count);
     if (count > 1){
         alert("Agent "+ agent.id+" start position error");
     }
+    } else{
+        console.log("is Rec");
     }
-    count = 0;
 }
 
 function checkRec(region){
+    console.log("check Rec");
     var matchedSpace;
     for(var i = 0; i< region.openSpaces.length; i++ ){
         var count;
-        if (region.openSpaces.includes({x:agent.position.x-1,y:agent.position.y})){
+        if (checkIncludes({x:region.openSpaces[i].x+1,y:region.openSpaces[i].y},region)){
             count++;
         }
-        if (region.openSpaces.includes({x:agent.position.x+1,y:agent.position.y})){
+        if (checkIncludes({x:region.openSpaces[i].x-1,y:region.openSpaces[i].y},region)){
             count++;
         }
-        if (region.openSpaces.includes({x:agent.position.x,y:agent.position.y-1})){
+        if (checkIncludes({x:region.openSpaces[i].x,y:region.openSpaces[i].y-1},region)){
             count++;
         }
-        if (region.openSpaces.includes({x:agent.position.x,y:agent.position.y+1})){
+        if (checkIncludes({x:region.openSpaces[i].x,y:region.openSpaces[i].y+1},region)){
             count++;
         }
         if (count > 1){
@@ -438,4 +454,5 @@ function showAgentsPath(allAgentsPaths) {
     paper = Raphael("holderOfBlock", 1280, 680);
     drawEnvironment(getEnvironment(),agentPath);
     showGuidelines(getEnvironment());
+    
 }

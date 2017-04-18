@@ -95,6 +95,7 @@ function diplay(oneRunInfo){   //set diplay content and format
     var t=JSON.parse(oneRunInfo.targetList);
     console.log(t);
 
+    result+="Environment Size:&nbsp"+oneRunInfo.environment+"<br>";
     result+="Total steps:&nbsp"+oneRunInfo.step+"<br>";
     coordinate.forEach((c)=>{
         result+="Region"+c.id+":"+"<br>"+"&nbsp&nbsp&nbsp&nbsp&nbsp"+"Open spaces: ";
@@ -179,7 +180,7 @@ function saveRunInfo(Environment, AgentPath,step,targetList) {
 
         var agentpath=JSON.stringify(agp);
 
-        var regionNumber=envi.length;
+        var regionNumber=envi.regions.length;
         console.log(regionNumber);
 
         $.ajax({

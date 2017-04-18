@@ -137,9 +137,8 @@ function runOnce() {
             maxPath=a.path.length-1;
         }
      });
-
      if(currentStep>=maxPath){//complete all pathes
-        $('#returnButton').show();
+        $('#saveRun').show();
      }
 
     if(!stateOfView){

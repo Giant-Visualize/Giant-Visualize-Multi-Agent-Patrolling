@@ -7,22 +7,28 @@ function getRunInfo(req, res,date,id,time,size,region,step){
     }else{
         var sql="SELECT * FROM runInfo WHERE";
         if(id!=""){
-            sql+="id=("+mysql.escape(id)+") AND";
+            sql+=" id=("+mysql.escape(id)+") AND";
         }
         if(date!=""){
-            sql+="date=("+mysql.escape(date)+") AND";
+            sql+=" date=("+mysql.escape(date)+") AND";
         }
         if(time!=""){
-            sql+="time=("+mysql.escape(time)+") AND";
+            sql+=" time=("+mysql.escape(time)+") AND";
         }
         if(size!=""){
-            sql+="size=("+mysql.escape(size)+") AND";
+            sql+=" environment=("+mysql.escape(size)+") AND";
         }
         if(region!=""){
-            sql+="region=("+mysql.escape(region)+") AND";
+            sql+=" regionNumber=("+mysql.escape(region)+") AND";
         }
         if(step!=""){
-            sql+="step=("+mysql.escape(step)+")";
+            sql+=" step=("+mysql.escape(step)+") AND";
+        }
+        var str=sql.substring(sql.length-3,sql.length);
+            console.log(str);
+        if(str=="AND"){
+            console.log(sql.slice(0,sql.length-4));
+            sql=sql.slice(0,sql.length-4);
         }
     }
 
