@@ -33,7 +33,9 @@ function readFile() {
             string = evt.target.result;
             environment = processFile(string);
             var type = getAlgorithmsType();
-              verifyFile(environment);
+            if(! verifyFile(environment)){
+		environment = null;
+	    }
             if(type === "constrained-3"){
                 validationConstrained3(environment);
             }else if(type === "constrained-4"){
