@@ -109,6 +109,8 @@ function setAlgorithmsType(){
     $('#regionMenu').show();
     $('#runMenu').show();
     $('#saveMenu').show();
+    $('#algorithmName').text(getAlgorithmsType());
+    $('#algorithmName').show();
 }
 
 function getAlgorithmsType(){
