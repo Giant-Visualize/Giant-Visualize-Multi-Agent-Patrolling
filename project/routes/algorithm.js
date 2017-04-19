@@ -21,55 +21,68 @@ function freeform(agentsInfo, targetList) {
 
     for (var i = 0; i < agentsInfo.length; i++) {
         var target = freeFormChooseTarget(agentsInfo[i], targetList);
-        var patharray = [];
 	var targets = [];
-        visitedPath.push(new visitedPathConstrator(agentsInfo[i].id, agentsInfo[i].region, patharray, targets));
+	var patharray = [];
+	 visitedPath.push(new visitedPathConstrator(agentsInfo[i].id, agentsInfo[i].region, patharray, targets));
         if (target) {
-            agentsInfoStore.push(AgentPathInfo(agentsInfo[i].id, agentsInfo[i].region, shortestPath(agentsInfo[i].position, target)));
+	    var shortPath1 = shortestPath(agentsInfo[i].position, target);
+            agentsInfoStore.push(AgentPathInfo(agentsInfo[i].id, agentsInfo[i].region, shortPath1));
             agentsInfo[i].position = target;
+	    visitedPath[i].targets.push(shortPath1[shortPath1.length-1]);
         }
     }//end for
-   
+   //when the next node of the current node is target choose target, don't wait until at the current node then choose next node
     while (targetList.length > 0) {
         for (var j = 0; j < agentsInfoStore.length; j++) {
-            if (agentsInfoStore[j].path.length > 0) {
-                var currentNode = agentsInfoStore[j].path.shift();
+	    var currentNode, tempTarget, shortPath, currentTarget;
+            if (agentsInfoStore[j].path.length > 1) {// > 0
+                currentNode = agentsInfoStore[j].path.shift();
                 visitedPath[j].path.push(currentNode);
 		targetList = deleteNodeFromTargetList(currentNode, targetList);
             } else {
-		var tempTarget = freeFormChooseTarget(agentsInfo[j], targetList);
-                if (tempTarget) {//find a target
-                    var shortPath = shortestPath(agentsInfo[j].position, tempTarget);
-                    var currentTarget = shortPath.shift();//dupulicate start point
-                    visitedPath[j].targets.push(currentTarget);//
-                    var newPathFirstNodeVisited = shortPath.shift();//visit the first node
-                    agentsInfoStore[j].path = shortPath;
-                    visitedPath[j].path.push(newPathFirstNodeVisited);//put the node in the visited array
-		    targetList = deleteNodeFromTargetList(newPathFirstNodeVisited, targetList);
-                    agentsInfo[j].position = tempTarget;
-                } else {//target is null
-                    agentsInfoStore[j].path = [];
+		if(agentsInfoStore[j].path.length>0)
+		    visitedPath[j].path.push(agentsInfoStore[j].path.shift());
+		tempTarget = freeFormChooseTarget(agentsInfo[j], targetList);
+		if (tempTarget) {//find a target
+                    shortPath = shortestPath(agentsInfo[j].position, tempTarget);
+                    currentTarget = shortPath.shift();//dupulicate start point
+		    visitedPath[j].targets.push(shortPath[shortPath.length-1]);
+		    agentsInfoStore[j].path = shortPath;
+		    agentsInfo[j].position = tempTarget;
                 }
             }
         }
-        targetListArray.push(copyTargetList(targetList));
+	 targetListArray.push(copyTargetList(targetList));
     }
+    //add the unvisited agentsInfoStorePath to visited path
+    // add the final node to the visited target
+    for(var k=0;k<agentsInfoStore.length;k++){
+	if(agentsInfoStore[k].path.length > 0){
+	    var t = [agentsInfoStore[k].path[ agentsInfoStore[k].path.length -1][0], agentsInfoStore[k].path[ agentsInfoStore[k].path.length -1][1]];
+	     visitedPath[k].targets.push(t);
+	}
+	
+	if(agentsInfoStore[k].path.length>0){
+	   visitedPath[k].path = visitedPath[k].path.concat(agentsInfoStore[k].path);
+	}
+    }
+    
     var returnValue = [];
     returnValue.push(visitedPath);
-    targetListArray.shift();
     returnValue.push(targetListArray);
+  
     return returnValue;
 }
 
 function freeFormChooseTarget(agent, targetList) {
     var target = null;
-    for (var i = 0; i < targetList.length; i++) {
-        if (targetList[i].regionId === agent.region) {
-            target = targetList[i].position;
-            targetList.splice(i, 1);
-            break;
-        }
-    }
+    for (var i = 0; i<targetList.length; i++) {
+            if (targetList[i].regionId === agent.region) {
+		target = targetList[i].position;
+		targetList.splice(i, 1);
+		break;
+            }
+	}
     return target;
 }
 
