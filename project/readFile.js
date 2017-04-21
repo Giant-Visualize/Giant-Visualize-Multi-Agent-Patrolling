@@ -120,7 +120,8 @@ function verifyRegionPosition(env) {
         var currentRegion = regions[i];
         for (var m = 0; m < currentRegion.openSpaces.length; m++) {
             if (currentRegion.openSpaces[m].x - 0 < 1 || currentRegion.openSpaces[m].x - 0 > size.x - 0 || currentRegion.openSpaces[m].y - 0 < 1 || currentRegion.openSpaces[m].y - 0 > size.y - 0) {
-                alert(fileErrorObj.error.invalidRegionCoordinate);
+		var p = m+1;
+                alert("Region "+ regions[i].id +" "+p+"th"+" coordinate is invalid.");
                 return false;
             }
         }
@@ -137,7 +138,7 @@ function verifyAgent(env) {
         var agentRegion = agents[j].region;
         //agent start position is invalid, like the index is less or more than size
         if (agents[j].position.x - 0 < 1 || agents[j].position.x - 0 > size.x - 0 || agents[j].position.y - 0 < 1 || agents[j].position.y - 0 > size.y - 0) {
-            alert(fileErrorObj.error.invalidAgentCoordinate);
+            alert("The coordinate of Agent "+ agents[j].id +" is invalid.");
             return false;
         }
 
@@ -151,7 +152,7 @@ function verifyAgent(env) {
                     }
                 }
                 if (n === regions[k].openSpaces.length) {
-                    alert(fileErrorObj.error.agentNotInRegion);
+                    alert("Agent " + agents[j].id +" is not in region "+regions[k].id);
                     return false;
                 }
             }
@@ -174,11 +175,11 @@ function agentsNumberConstrain(env) {
             }
         }
         if (count === 0) {
-            alert(fileErrorObj.error.regionHasAtLeastOneAgent);
+            alert("Region "+i+ " should have at least one agent.");
             return false;
         }
         if (count > regions[i].openSpaces.length / 2) {
-            alert(fileErrorObj.error.agentMoreThanHalfOfRegion);
+            alert("The number of agents in region "+ regions[i].id +" is more then the half of the open spaces in this region.");
             return false;
         }
     }
@@ -190,7 +191,7 @@ function duplicatedAgentId(env) {
     var ids = [];
     for (var i = 0; i < agents.length; i++){
         if (ids.includes(agents[i].id)) {
-            alert(fileErrorObj.error.duplicateAgentId);
+            alert("Agent id "+ agents[i].id + "is duplicated");
             return false;
         } else {
             ids.push(agents[i].id);
@@ -204,7 +205,7 @@ function duplicatedRegionId(env) {
     var ids = [];
     for (var i = 0; i < regions.length; i++) {
         if (ids.includes(regions[i].id)) {
-            alert(fileErrorObj.error.dupilcatedRegionId);
+            alert("The region id "+ regions[i].id + " is duplicated.");
             return false;
         } else {
             ids.push(regions[i].id);
@@ -219,7 +220,7 @@ function duplicateCoordinateInRegion(env) {
         var coordinatesInRegion = [];
         for (var j = 0; j < regions[i].openSpaces.length; j++) {
             if (coordinatesInRegion.includes(regions[i].openSpaces[j].x + " " + regions[i].openSpaces[j].y)) {
-                alert(fileErrorObj.error.duplicateCoordinateInRegion);
+                alert("Duplicate coordinate ("+regions[i].openSpaces[j].x + ","+ regions[i].openSpaces[j].y+") in region "+ regions[i].id);
                 return false;
             } else {
                 coordinatesInRegion.push(regions[i].openSpaces[j].x + " " + regions[i].openSpaces[j].y);
@@ -246,7 +247,7 @@ function regionNotContinue(env) {
             var down = y + 1;
             if (!(openSpaces.includes(left+" "+ y) || openSpaces.includes(right+ " "+ y) || openSpaces.includes(x+" "+up)
                 || openSpaces.includes(x+" "+down))) {
-                alert(fileErrorObj.error.regionCoordinateIsNotContinued);
+                alert("Region "+ regions[i].id +" coordinate ("+x+","+y+")" +" is not continued");
                 return false;
             }
         }
@@ -268,7 +269,7 @@ function validationConstrained3(env) {
             }
         }
         if (count > regions[i].openSpaces.length / 3) {
-            alert(fileErrorObj.error.agentMoreThanOneThird);
+            alert("The number of agent in region  "+ regions[i].id + " is more than [n/3]");
             return false;
         }
     }
