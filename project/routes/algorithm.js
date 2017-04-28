@@ -70,9 +70,9 @@ function freeform(agentsInfo, targetList) {
     var returnValue = [];
     returnValue.push(visitedPath);
     returnValue.push(targetListArray);
-  
     return returnValue;
 }
+
 
 function freeFormChooseTarget(agent, targetList) {
     var target = null;
@@ -131,7 +131,6 @@ function chooseTargetsAndGetPaths(agentsInfo, targetList) {
     return returnValue;
 }
 
-
 function AgentPathInfo(id, region, path) {
     var agent = {};
     agent.id = id;
@@ -164,21 +163,22 @@ function shortestPath(startPosi, endPosi) {
 
 //get the 0,1 environment matrix for display purpose and for finding the shortest path
 //the code readEnvironment can be reused
-function readEnvironment(environment) {
+function readEnvironment(env) {
     envMatrix = [];
-    var sizeX = environment.size.x;
-    var sizeY = environment.size.y;
+    var sizeX = env.size.x;
+    var sizeY = env.size.y;
+    
     for (var i = 0; i < sizeY; i++) {
         envMatrix[i] = [];
         for (var j = 0; j < sizeX; j++) {
             envMatrix[i][j] = 1;
         }
     }
-    for (var m = 0; m < environment.regions.length; m++) {
-        for (var n = 0; n < environment.regions[m].openSpaces.length; n++) {
-            var openspaceX = environment.regions[m].openSpaces[n].y - 1;
-            var openspaceY = environment.regions[m].openSpaces[n].x - 1;
-            envMatrix[openspaceX][openspaceY] = 0;
+    
+    for (var m = 0; m < env.regions.length; m++) {
+        for (var n = 0; n < env.regions[m].openSpaces.length; n++) {
+            var openspaceX = env.regions[m].openSpaces[n].y - 1;
+            var openspaceY = env.regions[m].openSpaces[n].x - 1;
         }
     }
 }
@@ -314,8 +314,7 @@ function constrain3GetPath(agentsInfo, targetList) {
         }
         targetListArray.push(copyTargetList(targetList));
     }
-    // console.log(JSON.stringify(visitedPath));
-    // console.log((targetListArray));
+   
     var returnValue = [];
     returnValue.push(visitedPath);
     returnValue.push(targetListArray);
@@ -351,7 +350,6 @@ function constrain3(env) {
     var agentsInfo1 = getAgentsInfo(env);
     var targetList1 = getTargetList(env);
     return constrain3GetPath(agentsInfo1, targetList1);
-
 }
 module.exports.constrain3 = constrain3;
 
@@ -361,7 +359,6 @@ function noConstrain(env){
     var agentsInfo = getAgentsInfo(env);
     var targetList = getTargetList(env);
     return freeform(agentsInfo, targetList); //return to client
- 
 }
 module.exports.noConstrain = noConstrain;
 //Don't change the code above

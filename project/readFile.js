@@ -6,21 +6,6 @@ var agentPath;
 var targetList;
 var currentTarget=[];
 var s = [];
-var fileErrorObj = {
-    error: {
-	 size: "Size of the environment is invalid",
-        invalidRegionCoordinate: "Region's coordinate is invalid",
-        invalidAgentCoordinate: "Agent's coordinate is invalid",
-        agentNotInRegion: "Agent not in the region",
-        regionHasAtLeastOneAgent: "One region has at least one agent",
-        agentMoreThanHalfOfRegion: "The number of agents are more than the half the number of open spaces",
-        dupilcatedRegionId: "Region id is not unique",
-        duplicateAgentId: "Agent id is not unique",
-        duplicateCoordinateInRegion: "Duplicate coordinate in the region",
-        regionCoordinateIsNotContinued: "The coordinates of the region are not continue",
-        agentMoreThanOneThird: "The number of agent is more than [n/3]"
-    }
-};
 
 
 function readFile() {
@@ -67,7 +52,7 @@ function processFile(string) {
             currentRegionID = lines[i].match(/\d+/g, '')[0];
             i++;
         }
-        if (lines[i].includes('Coordinates:')) {
+        if (lines[i].includes('Coordinates')) {
             var coordinates = lines[i].match(/\d+/g, '');
             for (var j = 0; j < coordinates.length; j = j + 2) {
                 var posi = Position(coordinates[j], coordinates[j + 1]);
@@ -83,7 +68,7 @@ function processFile(string) {
         if (lines[i].includes('Agent')) {
             var agentId = lines[i].match(/\d+/g, '')[0];
             var agentPosition = Position(lines[i].match(/\d+/g, '')[1], lines[i].match(/\d+/g, '')[2]);
-            agents.push(Agent(agentId, agentPosition, currentRegionID));
+            agents.push(new Agent(agentId, agentPosition, currentRegionID));
             i++;
         } else {
             i++;
@@ -92,6 +77,11 @@ function processFile(string) {
     environment.size = size;
     environment.regions = regions;
     environment.agents = agents;
+    console.log("front end");
+    for(var a=0;a<environment.regions.length;a++){
+	console.log(environment.regions[a].openSpaces);
+    }
+    
     return environment;
 }
 
@@ -300,7 +290,6 @@ function validationConstrained4(env) {
             checkStartPosition(agents[j],regions[i])
         }
     }
-
     
     return true;
 }
@@ -384,15 +373,19 @@ function Size(x, y) {
 }
 
 function Agent(id, position, region) {
+    /*
     var agent = {};
     agent.id = id;
     agent.position = position;
     agent.region = region;
-    return agent;
+    return agent;*/
+    this.id = id;
+    this.position = position;
+    this.region = region;
 }
 
-function Region(id, openSpaces) {
-    var region = {};
+function Region(id, openSpaces) {    
+ var region = {};
     region.id = id;
     region.openSpaces = openSpaces;
     return region;
@@ -408,7 +401,8 @@ function getSettings() {
         url: "/file",
         method: "GET",
         data: { environment: environment,
-        algo : getAlgorithmsType()
+		regions:environment.regions,
+		algo : getAlgorithmsType()
     },
         success: showAgentsPath,
         error: function(data) {

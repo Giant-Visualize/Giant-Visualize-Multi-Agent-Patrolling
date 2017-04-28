@@ -18,7 +18,18 @@ app.get('/', (req, res) => {
 app.get('/file', function (req, res, next) {
     environment = req.query.environment;
     algorithmName=req.query.algo;
+    
+    for(var i=0;i<environment.regions.length;i++){
+	var jsonSpaces = environment.regions[i].openSpaces;
+	var openSpaces = [];
+	for(var j in jsonSpaces){
+	    openSpaces.push(jsonSpaces[j]);
+	}
+	environment.regions[i].openSpaces = openSpaces;
+    }
+    
     var agentsInfoStore=[];
+    
     if(algorithmName=="constrained-3"){
         agentsInfoStore=algorithm.constrain3(environment);
     }else if(algorithmName == "constrained-4"){
