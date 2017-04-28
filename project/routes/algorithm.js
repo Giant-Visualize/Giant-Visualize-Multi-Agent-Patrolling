@@ -179,6 +179,7 @@ function readEnvironment(env) {
         for (var n = 0; n < env.regions[m].openSpaces.length; n++) {
             var openspaceX = env.regions[m].openSpaces[n].y - 1;
             var openspaceY = env.regions[m].openSpaces[n].x - 1;
+		 envMatrix[openspaceX][openspaceY] = 0;
         }
     }
 }
