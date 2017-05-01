@@ -1,8 +1,8 @@
 
-var times=85;
-var leftGap=250;
-var topGap=50;
-var radius=20;
+var times=50;
+var leftGap=20;
+var topGap=0;
+var radius=17;
 var min={};
 
 function switchGraph(){
@@ -127,21 +127,28 @@ function graph(Environment,regionID,agentPath,totalSteps,targetList,currentTarge
             var i=2.5;  // show taget list
             var j=1;
             ctx.fillStyle = 'black';
-            ctx.font="18px Times New Roman";
+            ctx.font="16px Times New Roman";
             ctx.fillText("Target list",leftGap+times*(max-min.x+i),topGap+times*(j));
             j+=0.5;
+            var count=0;
 
             if(totalSteps<targetList.length){
                 targetList[totalSteps].forEach((t)=>{
                 if(t.regionId==regionID){
                     ctx.fillText("("+t.position.x+","+t.position.y+")",(leftGap+times*(max-min.x+i)),topGap+times*(j));
-                    i+=0.6;
+                    i+=1;
+                    count++;
+                    if(count>=10){
+                        i=2.5;
+                        j+=0.5;
+                        count=0;
+                    }
                 }
                 });
             }
            
                 i=2.5; //show current target
-                j=2;
+                j+=1;
                 ctx.fillText("Agent",leftGap+times*(max-min.x+2.5),topGap+times*(j));
                 ctx.fillText("Current target",leftGap+times*(max-min.x+2.5)+150,topGap+times*(j));
 
@@ -202,8 +209,8 @@ function graph(Environment,regionID,agentPath,totalSteps,targetList,currentTarge
 
       ctx.fillText(count, leftGap+times*(d.x-min.x+1), topGap+times*(d.y-min.y+1)+4);
       ctx.textAlign="start";
-      ctx.font="13px Arial";
-      ctx.fillText("("+d.x+","+d.y+")", leftGap+times*(d.x-min.x+1)+radius, topGap+times*(d.y-min.y+1)-radius);
+      ctx.font="11px Arial";
+      ctx.fillText("("+d.x+","+d.y+")", leftGap+times*(d.x-min.x+1)+radius-5, topGap+times*(d.y-min.y+1)-radius)-5;
   }
 
 }
