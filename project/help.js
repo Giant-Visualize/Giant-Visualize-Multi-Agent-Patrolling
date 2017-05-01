@@ -140,6 +140,7 @@ function runOnce() {
         }
      });
      if(currentStep>=maxPath){//complete all pathes
+        swal("Completed, now you can save the run!");
         $('#saveRun').show();
      }
 

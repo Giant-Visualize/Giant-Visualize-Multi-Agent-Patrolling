@@ -393,6 +393,11 @@ function Region(id, openSpaces) {
  */
 
 function getSettings() {
+    try {
+        paper.remove();
+    } catch (error) {
+        console.log(error);
+    }
     if (environment === null)
         return;
     $.ajax({
