@@ -306,19 +306,18 @@ function checkIncludes(obj,region){
 function checkStartPosition (agent,region){
     var count = 0;
     if(!checkRec(region)){
-    if (checkIncludes({x:agent.position.x-1,y:agent.position.y},region)){
+    if (checkIncludes({x:parseInt(agent.position.x)-1,y:agent.position.y},region)){
         count++;
     }
-    if (checkIncludes({x:agent.position.x+1,y:agent.position.y},region)){
+    if (checkIncludes({x:parseInt(agent.position.x)+1,y:agent.position.y},region)){
         count++;
     }
-    if (checkIncludes({x:agent.position.x,y:agent.position.y+1},region)){
+    if (checkIncludes({x:agent.position.x,y:(parseInt(agent.position.y)+1)},region)){
         count++;
     }
-    if (checkIncludes({x:agent.position.x,y:agent.position.y-1},region)){
+    if (checkIncludes({x:agent.position.x,y:(parseInt(agent.position.y)-1)},region)){
         count++;
     }
-    console.log("count :" +count);
     if (count > 1){
         alert("Agent "+ agent.id+" start position error");
     }
@@ -329,28 +328,31 @@ function checkStartPosition (agent,region){
 
 function checkRec(region){
     console.log("check Rec");
-    var matchedSpace;
+    var matchedSpace = 0;
     for(var i = 0; i< region.openSpaces.length; i++ ){
-        var count;
-        if (checkIncludes({x:region.openSpaces[i].x+1,y:region.openSpaces[i].y},region)){
+        var count = 0;
+        if (checkIncludes({x:parseInt(region.openSpaces[i].x)+1,y:region.openSpaces[i].y},region)){
             count++;
         }
-        if (checkIncludes({x:region.openSpaces[i].x-1,y:region.openSpaces[i].y},region)){
+        if (checkIncludes({x:parseInt(region.openSpaces[i].x-1),y:region.openSpaces[i].y},region)){
             count++;
         }
-        if (checkIncludes({x:region.openSpaces[i].x,y:region.openSpaces[i].y-1},region)){
+        if (checkIncludes({x:region.openSpaces[i].x,y:parseInt(region.openSpaces[i].y)-1},region)){
             count++;
         }
-        if (checkIncludes({x:region.openSpaces[i].x,y:region.openSpaces[i].y+1},region)){
+        if (checkIncludes({x:region.openSpaces[i].x,y:parseInt(region.openSpaces[i].y)+1},region)){
             count++;
         }
         if (count > 1){
             matchedSpace++;
         }
     }
+    console.log(matchedSpace +" and "+region.openSpaces.length);
     if (matchedSpace == region.openSpaces.length){
+        console.log("Rec");
         return true;
     } else {
+         console.log("NotRec");
         return false;
     }
 }
@@ -448,7 +450,7 @@ function showAgentsPath(allAgentsPaths) {
         }
     });
 
-    paper = Raphael("holderOfBlock", 1280, 680);
+    paper = Raphael("holderOfBlock", 1280, 1280);
     drawEnvironment(getEnvironment(),agentPath);
     showGuidelines(getEnvironment());
     
