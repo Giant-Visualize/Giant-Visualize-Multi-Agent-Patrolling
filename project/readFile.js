@@ -77,10 +77,6 @@ function processFile(string) {
     environment.size = size;
     environment.regions = regions;
     environment.agents = agents;
-    console.log("front end");
-    for(var a=0;a<environment.regions.length;a++){
-	console.log(environment.regions[a].openSpaces);
-    }
     
     return environment;
 }
@@ -96,7 +92,7 @@ function verifyFile(env) {
 function verifySize(env) {
     var size = env.size;
     if (size.x > 16 || size.x < 8 || size.y > 16 || size.y < 8) {
-        alert(fileErrorObj.error.size);
+        alert("Size"+ size.x +" X " +size.y +" is invalid.");
         return false;
     }
     return true;
@@ -165,7 +161,7 @@ function agentsNumberConstrain(env) {
             }
         }
         if (count === 0) {
-            alert("Region "+i+ " should have at least one agent.");
+            alert("Region "+ regionId + " should have at least one agent.");
             return false;
         }
         if (count > regions[i].openSpaces.length / 2) {
