@@ -123,7 +123,7 @@ function getTotalSteps(){
 }
 
 function showAgentsPathForClick(result){
-    paper = Raphael("holderOfBlock",1280,680);
+    paper = Raphael("holderOfBlock",1280,1280);
 
     drawEnvironment(rawEnvironment);
     showGuidelines(rawEnvironment);
@@ -146,7 +146,7 @@ function runOnce() {
     if(!stateOfView){
         paper.remove();
         currentAgent = [];
-        paper = Raphael("holderOfBlock",1280,680);
+        paper = Raphael("holderOfBlock",1280,1280);
 //-----------------------------block-----------------------------------------
         drawEnvironment(rawEnvironment,resultOfMove);
         drawPath(resultOfMove,currentStep);
@@ -219,6 +219,7 @@ function drawEnvironment(environ,pth){
 
 function drawPath(r,totalSteps){
     var envi = rawEnvironment;
+    console.log(envi);
     var setPath = [];
     for(var i =0; i<r.length;i++){
 
