@@ -8,6 +8,7 @@ function jumpToHistoryPage(){
 
 function loadWindow(){
     $('#datepicker').datepicker();
+    $('#inputTime').bootstrapMaterialDatePicker({ date:false,format : 'HH:mm' });
 }
     
 
@@ -18,6 +19,14 @@ function getSearchDate(){
         date=formatDate($( '#datepicker').val()); //get input value
     }
     return date;
+}
+
+function getInputTime(){
+    var time="";
+    if($('#inputTime').val()){
+        time=($('#inputTime').val()); //get input value
+    }
+    return time;
 }
 
 function formatDate(date) {
@@ -43,10 +52,13 @@ function formatTime(date) {
     return [hour,min].join(':');
 }
 
-function getRunInfo(date) {
+function getRunInfo() {
 
    id=$('#inputId').val();
-   var time=$('#inputTime').val();
+   var date=getSearchDate();
+   var time=getInputTime();
+console.log(date);
+console.log(time);
    var size=$('#inputSize').val();
    var region=$('#inputRegion').val();
    var step=$('#inputStep').val();

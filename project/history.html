@@ -5,15 +5,16 @@
         <meta charset="utf-8">
 
         <link rel="stylesheet" type="text/css" href="node_modules/sweetalert/dist/sweetalert.css">
-  
+        <link rel="stylesheet" type="text/css" href="bootstrap-material-datetimepicker.css">
+
         <link rel="stylesheet" href ="style.css" type="text/css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
         <link type="text/css" rel="stylesheet" href="node_modules/materialize-css/bin/materialize.css"  media="screen,projection"/>
         <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
         <link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
-        
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
         <script src="history.js"></script>
-        
   	    <script src="https://code.jquery.com/jquery-2.2.0.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -25,6 +26,10 @@
         <script src="randomColor.js"></script>
         <script src="node_modules/sweetalert/dist/sweetalert.min.js"></script>
         <script src="node_modules/materialize-css/bin/materialize.js"></script>
+        <script src="node_modules/moment/moment.js"></script>
+        <script src="bootstrap-material-datetimepicker.js"></script>
+        
+  
       </head>
 
 
@@ -36,12 +41,12 @@
       <div class="container1">
       <input type="text" id = "inputId" placeholder="Run ID" style="width:15% ;text-align: center;" >
     	<input type="text" id = "datepicker" placeholder="Date" style="width:15% ;text-align: center;" >
-      <input type="text" id = "inputTime" placeholder="Time (HH:MM)" style="width:15% ;text-align: center;" >
+      <input type="text" id = "inputTime" placeholder="Time" style="width:15% ;text-align: center;" >
       <input type="text" id = "inputSize" placeholder="WidthXLength" style="width:15% ;text-align: center;" >
       <input type="text" id = "inputRegion" placeholder="Region" style="width:15% ;text-align: center;" >
       <input type="text" id = "inputStep" placeholder="Step" style="width:15% ;text-align: center;" >
       
-      <button type="button" class="btn btn-primary" onclick="getRunInfo(getSearchDate())"> Search</button>
+      <button type="button" class="btn btn-primary" onclick="getRunInfo()"> Search</button>
       </div>
     <div class="container2">
     <ul class="collapsible" data-collapsible="accordion">
