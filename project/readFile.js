@@ -275,7 +275,7 @@ function validationConstrained4(env) {
                 count++;
             }
         }
-        if (count > regions[i].openSpaces.length / 4) {
+        if ((count-1) > regions[i].openSpaces.length / 4) {
             alert("The number of agent in regin "+(i+1)+" is more than [n/4]");
             return false;
         }
